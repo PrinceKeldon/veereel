@@ -1,0 +1,485 @@
+"use server";
+
+import { requireAdmin } from "@/lib/admin";
+import { peekCuratorId } from "@/lib/curator";
+import { peekPlatformId } from "@/lib/platform";
+
+const FETCH_TIMEOUT_MS = 8000;
+const MAX_BYTES = 400_000; // was head-only (200KB); episode-count extraction needs body text too now
+
+export interface TitleMetadataResult {
+  name: string | null;
+  synopsis: string | null;
+  coverImageUrl: string | null;
+  platformGuess: string | null;
+  episodeCount: number | null;
+  /**
+   * How episodeCount was found, so the admin form can show honest
+   * confidence rather than presenting a text-pattern guess with the
+   * same weight as a structured-data hit. null when episodeCount is
+   * also null.
+   */
+  episodeCountSource: "structured" | "text-pattern" | null;
+  /**
+   * Actor names from schema.org JSON-LD only — deliberately no
+   * text-pattern fallback the way episodeCount has one. Regex-matching
+   * prose for names is genuinely unreliable (false positives on any
+   * capitalized phrase), unlike matching a number next to the word
+   * "episodes". If it's not in structured data, this stays empty for
+   * the admin to fill in — never a guess.
+   */
+  castNames: string[];
+  /** Also JSON-LD only (datePublished / releasedEvent.startDate) — same reasoning as castNames. */
+  releaseDate: string | null;
+  error?: string;
+}
+
+// Blocks the obvious loopback/private-network hostnames an admin could
+// paste by mistake (or a compromised admin session could be tricked
+// into fetching). Not exhaustive DNS-rebinding-proof SSRF protection —
+// that's disproportionate for a single-admin, requireAdmin()-gated
+// tool — just a reasonable first line of defense against the easy
+// cases, matching the "lightweight, not enterprise-grade" security
+// bar already set elsewhere in lib/admin.ts.
+function isBlockedHost(hostname: string): boolean {
+  const lower = hostname.toLowerCase();
+  if (lower === "localhost" || lower === "0.0.0.0" || lower === "::1") return true;
+  if (/^127\./.test(lower)) return true;
+  if (/^10\./.test(lower)) return true;
+  if (/^192\.168\./.test(lower)) return true;
+  if (/^172\.(1[6-9]|2\d|3[01])\./.test(lower)) return true;
+  if (/^169\.254\./.test(lower)) return true; // cloud metadata endpoints
+  return false;
+}
+
+function decodeEntities(text: string): string {
+  return text
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+}
+
+// Strips a leading "Episode 1 - " / "EP12: " / "Ep. 3 –" style prefix
+// that platforms often bake into a page's <title>/og:title — the page
+// this metadata comes from is usually one specific episode, but the
+// title Kilig wants is the series name, not "Episode 1 - <series name>".
+function stripEpisodePrefix(text: string): string {
+  return text.replace(/^\s*(?:episode|ep\.?)\s*\d+\s*[-:–—]\s*/i, "").trim();
+}
+
+function extractMetaContent(html: string, property: string): string | null {
+  const patterns = [
+    new RegExp(`<meta[^>]+(?:property|name)=["']${property}["'][^>]+content=["']([^"']*)["']`, "i"),
+    new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]+(?:property|name)=["']${property}["']`, "i"),
+  ];
+  for (const pattern of patterns) {
+    const match = html.match(pattern);
+    if (match?.[1]) return decodeEntities(match[1]);
+  }
+  return null;
+}
+
+function extractPlainTitle(html: string): string | null {
+  const match = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+  return match?.[1] ? decodeEntities(match[1]) : null;
+}
+
+function resolveImageUrl(rawUrl: string, baseUrl: URL): string | null {
+  try {
+    return new URL(rawUrl, baseUrl).toString();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Structured-data episode count — schema.org's numberOfEpisodes on a
+ * TVSeries/CreativeWorkSeries JSON-LD block, when a platform bothers
+ * to include one. Genuinely reliable when present, unlike the text
+ * fallback below, because it's the platform explicitly stating a
+ * count in machine-readable form rather than us guessing at prose.
+ */
+/**
+ * Parses every JSON-LD <script> block on the page into plain objects,
+ * silently skipping anything malformed (common enough on real sites
+ * not to treat as a fetch failure). Traverses `@graph` containers so
+ * nested nodes — a TVSeries/TVEpisode array published under `@graph`,
+ * which is how ReelShort and several other vertical-drama platforms
+ * structure theirs — land in the same flat list as top-level nodes,
+ * so the extractors below don't miss them. Shared by every
+ * structured-data extractor rather than each re-scanning/re-parsing
+ * the HTML separately.
+ */
+function parseJsonLdEntries(html: string): Record<string, unknown>[] {
+  const blocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) ?? [];
+  const entries: Record<string, unknown>[] = [];
+
+  function collect(node: unknown): void {
+    if (Array.isArray(node)) {
+      for (const item of node) collect(item);
+      return;
+    }
+    if (!node || typeof node !== "object") return;
+    const obj = node as Record<string, unknown>;
+    if (Array.isArray(obj["@graph"])) {
+      for (const item of obj["@graph"]) collect(item);
+    }
+    entries.push(obj);
+  }
+
+  for (const block of blocks) {
+    const jsonMatch = block.match(/>([\s\S]*?)<\/script>/i);
+    if (!jsonMatch?.[1]) continue;
+    try {
+      collect(JSON.parse(jsonMatch[1].trim()));
+    } catch {
+      continue;
+    }
+  }
+  return entries;
+}
+
+/**
+ * Structured-data episode count — schema.org's numberOfEpisodes on a
+ * TVSeries/CreativeWorkSeries JSON-LD block, when a platform bothers
+ * to include one. Genuinely reliable when present, unlike the text
+ * fallback below, because it's the platform explicitly stating a
+ * count in machine-readable form rather than us guessing at prose.
+ */
+function extractEpisodeCountFromJsonLd(entries: Record<string, unknown>[]): number | null {
+  for (const entry of entries) {
+    const count = entry.numberOfEpisodes;
+    if (typeof count === "number" && count > 0) return Math.round(count);
+    if (typeof count === "string" && /^\d+$/.test(count)) return parseInt(count, 10);
+  }
+  return null;
+}
+
+/**
+ * Actor names from schema.org's `actor` field — a Person object, an
+ * array of them, or occasionally just a plain string name depending
+ * on how carefully a platform implemented their structured data.
+ * Deliberately no text-pattern fallback (see castNames' docstring on
+ * TitleMetadataResult) — this returns [] rather than guessing when
+ * nothing structured is found.
+ */
+function extractCastNamesFromJsonLd(entries: Record<string, unknown>[]): string[] {
+  for (const entry of entries) {
+    const actor = entry.actor;
+    if (!actor) continue;
+
+    const candidates = Array.isArray(actor) ? actor : [actor];
+    const names = candidates
+      .map((c) => (typeof c === "string" ? c : typeof c === "object" && c && "name" in c ? (c as { name: unknown }).name : null))
+      .filter((n): n is string => typeof n === "string" && n.trim().length > 0)
+      .map((n) => n.trim());
+
+    if (names.length > 0) return names;
+  }
+  return [];
+}
+
+/** schema.org's datePublished — with releasedEvent.startDate as the common platform alternative — same JSON-LD-only reasoning as castNames. Returned as-is (ISO-ish string); parsing/validation happens at the form boundary. */
+function extractReleaseDateFromJsonLd(entries: Record<string, unknown>[]): string | null {
+  for (const entry of entries) {
+    if (typeof entry.datePublished === "string" && entry.datePublished.trim().length > 0) {
+      return entry.datePublished.trim();
+    }
+    const releasedEvent = entry.releasedEvent;
+    if (releasedEvent && typeof releasedEvent === "object") {
+      const startDate = (releasedEvent as Record<string, unknown>).startDate;
+      if (typeof startDate === "string" && startDate.trim().length > 0) return startDate.trim();
+    }
+  }
+  return null;
+}
+
+/**
+ * Best-effort text-pattern fallback for when there's no structured
+ * data: looks for phrasing like "24 Episodes" / "Total: 24 episodes"
+ * in the page's visible text. Genuinely a guess, not a guarantee —
+ * there's no standard for this the way there is for og:title, so this
+ * is pattern-matching prose, not reading a declared fact. Callers
+ * must treat this as a lower-confidence result than the JSON-LD path
+ * (see episodeCountSource on TitleMetadataResult).
+ */
+function extractEpisodeCountFromText(html: string): number | null {
+  const plainText = html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ");
+
+  const match = plainText.match(/\b(\d{1,4})\s*(?:total\s+)?episodes?\b/i);
+  if (!match) return null;
+
+  const count = parseInt(match[1], 10);
+  // Sanity bound — a match like "2024 episodes" (a year, misfired) or
+  // "0 episodes" isn't a real episode count.
+  if (count < 1 || count > 2000) return null;
+  return count;
+}
+
+/**
+ * Detects the platform name from URL patterns and page content when
+ * og:site_name isn't available. Handles FlareFlow, ReelShort, ShortMax,
+ * DramaBox, and other common vertical drama platforms.
+ */
+function detectPlatformFromUrl(url: URL, html: string): string | null {
+  const hostname = url.hostname.toLowerCase();
+  const pathname = url.pathname.toLowerCase();
+
+  // FlareFlow detection — multiple domain patterns
+  if (hostname.includes("flareflow")) return "FlareFlow";
+  if (hostname.includes("app.ff") || hostname === "ff.app") return "FlareFlow";
+
+  // ReelShort variations
+  if (hostname.includes("reelshort")) return "ReelShort";
+  if (hostname.includes("reel-short")) return "ReelShort";
+
+  // ShortMax variations
+  if (hostname.includes("shortmax")) return "ShortMax";
+  if (hostname.includes("short-max")) return "ShortMax";
+
+  // DramaBox variations
+  if (hostname.includes("dramabox")) return "DramaBox";
+  if (hostname.includes("drama-box")) return "DramaBox";
+
+  // WeTV / Tencent platforms
+  if (hostname.includes("wetv")) return "WeTV";
+  if (hostname.includes("vip.qq")) return "QQ Video";
+  if (hostname.includes("iqiyi")) return "iQIYI";
+
+  // Other Asian drama platforms
+  if (hostname.includes("viki") || hostname.includes("vikiraw")) return "Viki";
+  if (hostname.includes("youku")) return "Youku";
+  if (hostname.includes("bilibili")) return "Bilibili";
+
+  // As fallback, try to extract from page text (look for "Watch on X" patterns)
+  const watchOnMatch = html.match(/watch\\s+on\\s+([\\w\\s]+?)(?:for free|\\$|$|<|\\n)/i);
+  if (watchOnMatch?.[1]) {
+    const extracted = watchOnMatch[1].trim();
+    // Filter out common noise
+    if (!/^(free|premium|now|today)$/i.test(extracted) && extracted.length < 30) {
+      return extracted;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Fetches a page and pulls whatever a well-built page's own meta tags
+ * offer — the same mechanism link-preview bots (Slack, Twitter,
+ * iMessage) use to build a card, not an LLM. Deliberately not
+ * exhaustive: a synopsis pulled from og:description is written for
+ * SEO/marketing, not necessarily Kilig's voice or length, and there's
+ * no meta tag for trope/mood tags at all — those still need real
+ * editorial judgment. Treat every field this returns as a first draft
+ * to review, not a final answer. See admin/titles/new for how the
+ * result gets used: it prefills the form, nothing auto-submits.
+ *
+ * episodeCount is a step down in reliability from the rest: there's
+ * no standard meta tag for it the way there is for og:title, so this
+ * tries schema.org JSON-LD (numberOfEpisodes) first — genuinely
+ * reliable when a platform includes it — and falls back to matching
+ * phrasing like "24 Episodes" in the page's visible text, which is a
+ * real best-effort guess, not a guarantee. episodeCountSource tells
+ * the caller which path produced it, so the admin form can show
+ * honest confidence instead of presenting a text-pattern guess with
+ * the same weight as a structured-data hit.
+ *
+ * castNames and releaseDate are JSON-LD-only, with no text-pattern
+ * fallback at all — see their docstrings on TitleMetadataResult for
+ * why a guess isn't good enough for either of those specifically.
+ */
+export async function fetchTitleMetadata(rawUrl: string): Promise<TitleMetadataResult> {
+  await requireAdmin();
+  return fetchTitleMetadataCore(rawUrl);
+}
+
+/**
+ * Curator-facing equivalent of fetchTitleMetadata() above — same core
+ * fetch/parse logic, different authorization (any claimed Curator,
+ * not just admin) and deliberately no distinction beyond that: a
+ * curator's "Add a title not on Kilig" preview gets exactly the same
+ * fields, same reliability tiers, same honesty about what's a
+ * structured-data hit vs. a text-pattern guess. See
+ * submitTitleFromLink() in curator-actions.ts for what happens after
+ * the preview — this function only ever fetches and previews, it
+ * never writes anything.
+ */
+export async function fetchTitleMetadataForCurator(rawUrl: string): Promise<TitleMetadataResult> {
+  const curatorId = await peekCuratorId();
+  if (!curatorId) {
+    return {
+      name: null,
+      synopsis: null,
+      coverImageUrl: null,
+      platformGuess: null,
+      episodeCount: null,
+      episodeCountSource: null,
+      castNames: [],
+      releaseDate: null,
+      error: "Claim a name before adding a title.",
+    };
+  }
+  return fetchTitleMetadataCore(rawUrl);
+}
+
+/**
+ * Platform-facing equivalent of fetchTitleMetadataForCurator() above —
+ * same core fetch/parse logic, authorization is any signed-in Platform
+ * (see lib/platform.ts). A verified partner previewing one of their own
+ * titles' pages gets exactly the same fields/reliability tiers as the
+ * curator preview. Like the curator version this only ever fetches and
+ * previews, never writes — the write path is submitTitleFromPlatform()
+ * in platform-actions.ts.
+ */
+export async function fetchTitleMetadataForPlatform(rawUrl: string): Promise<TitleMetadataResult> {
+  const platformId = await peekPlatformId();
+  if (!platformId) {
+    return {
+      name: null,
+      synopsis: null,
+      coverImageUrl: null,
+      platformGuess: null,
+      episodeCount: null,
+      episodeCountSource: null,
+      castNames: [],
+      releaseDate: null,
+      error: "Sign in as a platform first.",
+    };
+  }
+  return fetchTitleMetadataCore(rawUrl);
+}
+
+async function fetchTitleMetadataCore(rawUrl: string): Promise<TitleMetadataResult> {
+  const empty: TitleMetadataResult = {
+    name: null,
+    synopsis: null,
+    coverImageUrl: null,
+    platformGuess: null,
+    episodeCount: null,
+    episodeCountSource: null,
+    castNames: [],
+    releaseDate: null,
+  };
+
+  let url: URL;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    return { ...empty, error: "Not a valid URL." };
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    return { ...empty, error: "URL must be http or https." };
+  }
+  if (isBlockedHost(url.hostname)) {
+    return { ...empty, error: "That host isn't fetchable." };
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  try {
+    const res = await fetch(url.toString(), {
+      signal: controller.signal,
+      redirect: "follow",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; KiligBot/1.0; admin title lookup)",
+      },
+    });
+
+    if (!res.ok) {
+      return { ...empty, error: `Page returned ${res.status}.` };
+    }
+
+    const contentType = res.headers.get("content-type") ?? "";
+    if (!contentType.includes("text/html")) {
+      return { ...empty, error: "That URL isn't an HTML page." };
+    }
+
+    let html = "";
+    const reader = res.body?.getReader();
+    if (reader) {
+      const decoder = new TextDecoder();
+      let bytesRead = 0;
+      while (bytesRead < MAX_BYTES) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        html += decoder.decode(value, { stream: true });
+        bytesRead += value.length;
+      }
+      await reader.cancel().catch(() => {});
+    } else {
+      html = await res.text();
+    }
+
+
+    const ogTitle = extractMetaContent(html, "og:title");
+    const plainTitle = extractPlainTitle(html);
+    const siteName = extractMetaContent(html, "og:site_name");
+
+    // A bare <title> tag often carries site branding (e.g. "Show Name
+    // | ReelShort") that og:title usually doesn't — strip a trailing
+    // " | Site" / " - Site" suffix if we also know the site name, so
+    // it doesn't leak into the title field.
+    let name = ogTitle ?? plainTitle;
+    if (name) name = stripEpisodePrefix(name);
+    if (name && siteName) {
+      const suffixPattern = new RegExp(`\\s*[|\\-–—]\\s*${siteName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`, "i");
+      name = name.replace(suffixPattern, "").trim();
+    }
+
+    const synopsis = extractMetaContent(html, "og:description") ?? extractMetaContent(html, "description");
+
+    const rawImage = extractMetaContent(html, "og:image") ?? extractMetaContent(html, "og:image:secure_url") ??
+      extractMetaContent(html, "twitter:image") ?? extractMetaContent(html, "twitter:image:src");
+    const coverImageUrl = rawImage ? resolveImageUrl(rawImage, url) : null;
+
+    const jsonLdEntries = parseJsonLdEntries(html);
+
+    const structuredEpisodeCount = extractEpisodeCountFromJsonLd(jsonLdEntries);
+    const textEpisodeCount = structuredEpisodeCount === null ? extractEpisodeCountFromText(html) : null;
+    const episodeCount = structuredEpisodeCount ?? textEpisodeCount;
+    const episodeCountSource: TitleMetadataResult["episodeCountSource"] =
+      structuredEpisodeCount !== null ? "structured" : textEpisodeCount !== null ? "text-pattern" : null;
+
+    const castNames = extractCastNamesFromJsonLd(jsonLdEntries);
+    const releaseDate = extractReleaseDateFromJsonLd(jsonLdEntries);
+
+    // Detect platform from URL and metadata with fallback pattern matching
+    let detectedPlatform = siteName;
+    if (!detectedPlatform) {
+      detectedPlatform = detectPlatformFromUrl(url, html);
+    }
+
+    if (!name && !synopsis && !coverImageUrl && episodeCount === null && castNames.length === 0 && !releaseDate) {
+      return { ...empty, error: "No usable metadata found on that page." };
+    }
+
+    return {
+      name: name || null,
+      synopsis: synopsis || null,
+      coverImageUrl,
+      platformGuess: detectedPlatform,
+      episodeCount,
+      episodeCountSource,
+      castNames,
+      releaseDate,
+    };
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      return { ...empty, error: "Timed out fetching that page." };
+    }
+    return { ...empty, error: "Couldn't fetch that page." };
+  } finally {
+    clearTimeout(timeout);
+  }
+}

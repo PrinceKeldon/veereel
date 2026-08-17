@@ -1,0 +1,700 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url moved to prisma.config.ts (Prisma 7+)
+}
+
+enum TagCategory {
+  trope
+  mood
+  cast_type
+  monetization_type
+}
+
+enum Pacing {
+  fast
+  medium
+  slow
+}
+
+enum TitleStatus {
+  ongoing
+  completed
+  cancelled
+}
+
+enum PriceModel {
+  free
+  pay_per_unlock
+  subscription
+  ad_supported
+}
+
+// Skip Meter Stage 1 — the curator's own honest read, not a fake
+// aggregate. hooks_fast/slow_burn/filler_heavy is deliberately
+// judgeable from watching just the first episode or two, since that's
+// realistically all the curator can commit to per title (see
+// ARCHITECTURE.md's Skip Meter section for why this is the primary
+// field and EndingType is optional).
+enum HookPoint {
+  hooks_fast
+  slow_burn
+  filler_heavy
+}
+
+enum EndingType {
+  happy
+  bittersweet
+  cliffhanger
+  unresolved
+}
+
+enum InteractionAction {
+  viewed_listing
+  viewed_detail
+  clicked_out
+  saved
+  searched
+  reacted
+  hook_vote
+}
+
+// The taxonomy asset. Rows are seeded up front (see prisma/seed.ts)
+// and also auto-registered by createTitle() as new tag values show
+// up — see the comment on Title.tropeTags. Versioned via is_active so
+// it can evolve without breaking already-tagged titles.
+model TagDefinition {
+  id          String      @id @default(uuid())
+  category    TagCategory
+  value       String
+  label       String
+  description String?
+  isActive    Boolean     @default(true) @map("is_active")
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  @@unique([category, value])
+  @@map("tag_definitions")
+}
+
+model Producer {
+  id            String    @id @default(uuid())
+  name          String
+  contactEmail  String?   @map("contact_email")
+  website       String?
+  isVerified    Boolean   @default(false) @map("is_verified")
+  verifiedAt    DateTime? @map("verified_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  titles Title[]
+
+  @@map("producers")
+}
+
+// Real, persistent identity — replaces the disposable claimed-name
+// cookie (see Curator below, and curator.ts) as the source of truth
+// for who owns a Curator or Platform profile. Existing Curator rows
+// are migrated onto a User via forced re-claim (existing curators
+// re-authenticate with an email before they can act as that curator
+// again), not backfilled silently — there's no email on file for any
+// of them today. curatorId/platformId on this model stay implicit
+// (via the back-relations on Curator/Platform) rather than duplicated
+// here, same as every other one-to-one in this schema.
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  // Null until a password or magic-link flow sets one — magic-link-only
+  // accounts are allowed to exist with no password at all, same
+  // "don't build a field before it's needed" discipline as
+  // Producer.contactEmail/Title.editorialEndingType being optional.
+  passwordHash    String?   @map("password_hash")
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  curator            Curator?
+  platform           Platform?
+  passwordResetTokens PasswordResetToken[]
+
+  @@map("users")
+}
+
+// The single operator account for the admin surface. DB-backed rather
+// than the old env-var-only gate (see the Admin model's evolution in
+// admin.ts) so the admin password can be changed in-app and — when it
+// is — every previously-issued session cookie stops working at once
+// (the cookie is a digest of the hash, not the hash itself). Seeded on
+// first login from ADMIN_PASSWORD when no row exists yet; once a row
+// exists the env var is purely a bootstrap, not a live override.
+model Admin {
+  id           String    @id @default(uuid())
+  username     String    @unique
+  passwordHash String    @map("password_hash")
+  // The sha256 of the current session token — null when logged out.
+  // One active admin session at a time (single operator), rotated on
+  // every login/password change so old cookies die with them.
+  sessionToken String?   @map("session_token")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+// A single-use, expiring grant to set a new password for a User
+// account (curator or platform — they're the same User row). Created
+// by an admin from the dashboard (no email provider exists, so the
+// link is relayed out-of-band) and consumed at /reset-password.
+// Only a sha256 of the raw token is stored — a DB leak doesn't hand
+// out working reset links. See lib/reset-actions.ts.
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+// Verified org identity — ReelShort, DramaBox, etc. Deliberately a
+// separate model from Curator rather than a role flag on it: a
+// platform needs fields (verification, official links) a fan curator
+// never does, and keeping them separate means requirePlatform() stays
+// a simple existence check, the same shape requireAdmin() (admin.ts)
+// and requireCurator() already are — no branching on a type column
+// scattered through curator-actions.ts. isVerified/verifiedAt mirror
+// Producer's existing naming for the same concept on that model.
+model Platform {
+  id              String    @id @default(uuid())
+  userId          String    @unique @map("user_id")
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name            String    @unique
+  slug            String    @unique
+  logoUrl         String?   @map("logo_url")
+  officialSiteUrl String?   @map("official_site_url")
+
+  isVerified      Boolean   @default(false) @map("is_verified")
+  verifiedAt      DateTime? @map("verified_at")
+
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // A platform's own official collections — kept on Collection via a
+  // second optional FK (see Collection below) rather than a separate
+  // PlatformCollection model, so titles/likes/rendering all reuse the
+  // exact same Collection machinery fan curators already have.
+  officialCollections Collection[] @relation("PlatformCollection")
+
+  // Titles this platform published directly via the partner self-service
+  // flow (submitTitleFromPlatform() in platform-actions.ts) — see
+  // Title.submittedByPlatformId for the SetNull reasoning.
+  submittedTitles Title[] @relation("PlatformSubmissions")
+
+  // Announcements the platform posts on its own /platform/[slug] page —
+  // their voice, deliberately contained to their page (see the
+  // PlatformAnnouncement model).
+  announcements PlatformAnnouncement[]
+
+  @@map("platforms")
+}
+
+model Title {
+  id                String      @id @default(uuid())
+  producerId        String?     @map("producer_id")
+  producer          Producer?   @relation(fields: [producerId], references: [id], onDelete: SetNull)
+
+  name              String
+  synopsis          String?
+  language          String
+  countryOfOrigin   String?     @map("country_of_origin")
+
+  // Season 2+ of an existing show is its own independent Title row —
+  // on these platforms it near-always has its own distinct watch
+  // link/page, sometimes on a different platform entirely, so it
+  // needs its own Availability/reactions/Skip Meter data rather than
+  // being folded into the original row. This just links the rows.
+  // Season 1 (or a standalone title) has seasonOfId = null;
+  // Season 2+ points back at Season 1's id. Deliberately not a
+  // self-referencing chain (season 3 -> season 2 -> season 1) —
+  // everything points at the same root so "show me all seasons" is
+  // one query, not a recursive walk.
+  seasonOfId        String?     @map("season_of_id")
+  seasonOf          Title?      @relation("TitleSeasons", fields: [seasonOfId], references: [id], onDelete: SetNull)
+  seasons           Title[]     @relation("TitleSeasons")
+  seasonNumber      Int?        @map("season_number")
+
+  // Provenance for a title a Curator (see Curator model below)
+  // submitted via "Add a title not on Kilig" — null for everything
+  // else (admin-created titles, or titles that predate this feature).
+  // SetNull rather than Cascade: deleting a Curator shouldn't delete
+  // the titles they brought into the catalogue, just the attribution.
+  submittedByCuratorId String?  @map("submitted_by_curator_id")
+  submittedByCurator   Curator? @relation(fields: [submittedByCuratorId], references: [id], onDelete: SetNull)
+
+  // Provenance for a title a verified partner (ReelShort, DramaBox...)
+  // published via the partner self-service flow — same shape as
+  // submittedByCuratorId above: SetNull so deleting a Platform account
+  // never deletes the titles it brought into the catalogue, just clears
+  // attribution, and it's the reason /platform/[slug] backlinks to the
+  // platform that owns the title. Unlike the curator path there is NO
+  // draft-equivalent flag — a verified partner's submission is live
+  // immediately (isPublished: true, curatorDraft: false), see
+  // PARTNER_PUBLISHING_PLAN.md.
+  submittedByPlatformId String?  @map("submitted_by_platform_id")
+  submittedByPlatform   Platform? @relation("PlatformSubmissions", fields: [submittedByPlatformId], references: [id], onDelete: SetNull)
+
+  // External trailer URL — simple, future-proof string (see
+  // PARTNER_PUBLISHING_PLAN.md). Rendered as a "Watch Trailer" button on
+  // the title page only when set; no embedded player.
+  trailerUrl          String?  @map("trailer_url")
+
+  // Taxonomy — normalized and auto-registered into TagDefinition by
+  // createTitle() (see lib/actions.ts): typing a new tag grows the
+  // vocabulary rather than being rejected, so TagDefinition stays a
+  // living record of what's actually in use, not a closed enum you'd
+  // need to edit code to extend.
+  tropeTags         String[]    @map("trope_tags")
+  moodTags          String[]    @map("mood_tags")
+  pacing            Pacing?
+  castType          String?     @map("cast_type")
+  // Actual named cast — deliberately separate from castType above,
+  // which is a coarse archetype tag ("ensemble_cast", registered
+  // through the same TagDefinition system as trope/mood tags), not
+  // actor names. Simple string list rather than a relational
+  // CastMember model for now — faster to ship; a real model (actor +
+  // optional character, reusable across titles so "more from this
+  // actor" becomes possible) is the natural next step if cast data
+  // ends up mattering more than expected, not built speculatively now.
+  castNames         String[]    @map("cast_names")
+
+  // Skip Meter Stage 1 (editorial) — the curator's own honest read,
+  // realistically formed from watching 1-2 episodes, not a full
+  // watch-through. editorialEndingType is intentionally never
+  // required or guessed — see ARCHITECTURE.md — only filled in once
+  // the curator has actually finished a title. Stage 2 (community
+  // voting on when a viewer got hooked, aggregated behind a real
+  // sample-size threshold) lives on UserInteraction's new `hook_vote`
+  // action, not here — this is only ever one person's read.
+  editorialHookPoint  HookPoint?  @map("editorial_hook_point")
+  editorialEndingType EndingType? @map("editorial_ending_type")
+
+  episodeCount        Int?       @map("episode_count")
+  avgEpisodeSeconds   Int?       @map("avg_episode_seconds")
+
+  releaseDate       DateTime?   @map("release_date") @db.Date
+  status            TitleStatus @default(ongoing)
+
+  coverImageUrl     String?     @map("cover_image_url")
+  isPublished       Boolean     @default(false) @map("is_published")
+  // Curator-submitted titles are published to their collection immediately
+  // (isPublished: true, curatorDraft: true) but don't appear on the homepage
+  // or search until an admin approves them (curatorDraft: false). This
+  // decouples "in a curator's collection" from "officially on Kilig."
+  curatorDraft      Boolean     @default(false) @map("curator_draft")
+
+  // Admin's manual homepage-hero picks — the pre-launch bridge before
+  // there's enough real collection volume for an honest most-collected
+  // hero (see lib/hero.ts). 1-5, unique, sparse (most titles are null).
+  // Deliberately a plain column on Title rather than a join table: this
+  // mirrors isPublished/curatorDraft's existing pattern of simple flags
+  // living directly on the row rather than a separate model, and there's
+  // only ever one active hero set at a time. HERO_MODE in AppSetting
+  // decides whether this column or the most-collected query actually
+  // powers the hero — see that model's comment.
+  heroRank          Int?        @unique @map("hero_rank")
+
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  availability      Availability[]
+  reactions         TitleReaction[]
+  interactions      UserInteraction[]
+  collectionItems   CollectionItem[]
+  announcements     PlatformAnnouncement[]
+
+  @@index([language])
+  @@index([pacing])
+  @@index([isPublished])
+  @@index([curatorDraft])
+  @@index([heroRank])
+  @@map("titles")
+}
+
+model Availability {
+  id                  String     @id @default(uuid())
+  titleId             String     @map("title_id")
+  title               Title      @relation(fields: [titleId], references: [id], onDelete: Cascade)
+
+  platform            String
+  deepLinkUrl         String     @map("deep_link_url")
+  priceModel          PriceModel? @map("price_model")
+  priceAmountCents    Int?       @map("price_amount_cents")
+  currency            String     @default("USD")
+
+  regionAvailability  String[]   @map("region_availability")
+
+  isActive            Boolean    @default(true) @map("is_active")
+  lastVerifiedAt       DateTime?  @map("last_verified_at")
+  createdAt            DateTime   @default(now()) @map("created_at")
+  updatedAt             DateTime   @updatedAt @map("updated_at")
+
+  interactions        UserInteraction[]
+
+  @@unique([titleId, platform, deepLinkUrl])
+  @@index([titleId])
+  @@index([platform])
+  @@map("availability")
+}
+
+// Editorial "why people love it" quotes — the emotional headline on the
+// detail page. Deliberately separate from the taxonomy: reactions are
+// what a user reads first, tags are plumbing shown behind a disclosure.
+model TitleReaction {
+  id            String   @id @default(uuid())
+  titleId       String   @map("title_id")
+  title         Title    @relation(fields: [titleId], references: [id], onDelete: Cascade)
+
+  emoji         String
+  quoteText     String   @map("quote_text")
+  authorHandle  String?  @map("author_handle")
+  displayOrder  Int      @default(0) @map("display_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([titleId])
+  @@map("title_reactions")
+}
+
+// Seed of the recommendation flywheel — log every view/click/save/search
+// even before anything reads this table. Cheap now, invaluable later.
+//
+// One-reaction-per-session enforcement: `reacted` rows are additionally
+// constrained by a *partial* unique index — one (session_id, title_id)
+// pair per session, scoped to `WHERE action = 'reacted'` — added by hand
+// in prisma/migrations/20260802120100_add_reaction_uniqueness_index/.
+// Prisma's schema language has no way to express a WHERE-scoped unique
+// index (only whole-table @@unique, which would wrongly forbid a
+// session from having multiple viewed_detail/clicked_out rows for the
+// same title), so this constraint exists in the database only — it's
+// not visible here. logReaction() in actions.ts catches Prisma's P2002
+// violation code to turn that into an honest "already reacted" result.
+//
+// Same pattern for `hook_vote` (Skip Meter Stage 2 — "when did it hook
+// you?"): a second partial unique index, one (session_id, title_id)
+// pair scoped to WHERE action = 'hook_vote', added in
+// prisma/migrations/20260803120200_add_hook_vote_uniqueness_index/.
+// logHookVote() in actions.ts catches P2002 the same way.
+model UserInteraction {
+  id              String             @id @default(uuid())
+  userId          String?            @map("user_id")
+  sessionId       String             @map("session_id")
+
+  titleId         String             @map("title_id")
+  title           Title              @relation(fields: [titleId], references: [id], onDelete: Cascade)
+  availabilityId  String?            @map("availability_id")
+  availability    Availability?      @relation(fields: [availabilityId], references: [id], onDelete: SetNull)
+
+  action          InteractionAction
+  metadata        Json               @default("{}")
+
+  createdAt       DateTime           @default(now()) @map("created_at")
+
+  @@index([titleId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("user_interactions")
+}
+
+// Persists free-text search queries from /search. Deliberately separate
+// from UserInteraction rather than a nullable titleId there — a search
+// isn't about one title, and keeping the FK on UserInteraction NOT NULL
+// keeps that table's existing queries simple. See ARCHITECTURE.md.
+model SearchLog {
+  id          String   @id @default(uuid())
+  sessionId   String   @map("session_id")
+  query       String
+  resultCount Int?     @map("result_count")
+  filters     Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([query])
+  @@map("search_logs")
+}
+
+// Collections MVP — see ARCHITECTURE.md's "Collections" section for the
+// product reasoning. Deliberately NOT a full accounts system: a Curator
+// is claimed with just a display name (no password/email), which is
+// enough identity to publish a Collection and be followed, without
+// taking on the auth surface a real accounts system would need. The
+// existing admin single-shared-password gate and anonymous session
+// cookie (session.ts) are both untouched by this — Curator is a third,
+// separate identity concept, only used by the collections/follow
+// feature.
+model Curator {
+  id          String   @id @default(uuid())
+  // Nullable through the forced-re-claim migration window: existing
+  // rows predate real accounts and have no email on file. Becomes
+  // NOT NULL in a follow-up migration once re-claim coverage is
+  // confirmed — see the note on the add_users_and_platforms migration.
+  // A Curator can exist without a User only in that transitional
+  // window; claimDisplayName() for a *new* curator now requires one.
+  userId      String?  @unique @map("user_id")
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Claimed, not assigned — first-come-first-served, checked for
+  // uniqueness in claimDisplayName() (lib/curator-actions.ts). This is
+  // the identity a visitor sees and follows, so it's the natural
+  // unique key rather than a separate slug field.
+  displayName String   @unique @map("display_name")
+
+  // Identity fields — what makes a curator's profile feel personal rather
+  // than a database record. All optional initially (existing curators can
+  // have empty fields), but the UI should eventually prompt for
+  // tasteStatement on first login or collection creation.
+  // avatarUrl can be user-uploaded later, or generated (Gravatar,
+  // deterministic avatar, etc). bio is optional — a one-line identity
+  // ("collector of dangerous love stories"). tasteStatement is the
+  // "signature line" that appears on every collection — what kind of
+  // drama does this curator like? ("I like my romance complicated.")
+  bio             String?       // One-line identity (max ~60 chars)
+  tasteStatement  String?       @map("taste_statement")  // Signature line for collections (max ~80 chars)
+  avatarUrl       String?       @map("avatar_url")
+
+  // The Collection this curator pins as their "featured shelf" on
+  // their profile. Optional — when unset, the profile page falls back
+  // to whatever they most recently updated (created or had a title
+  // added to), see curator/[displayName]/page.tsx. Nullable FK with
+  // SetNull so deleting a Collection just unpins it, never orphans a
+  // curator. Two relations exist between Curator and Collection, so
+  // both sides of both are named (Prisma requires it).
+  featuredCollectionId String?     @unique @map("featured_collection_id")
+  featuredCollection   Collection? @relation("FeaturedCollection", fields: [featuredCollectionId], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  collections Collection[] @relation("CuratorCollections")
+
+  // Both sides of Follow named from Curator's point of view: rows
+  // where this curator is the one following someone, and rows where
+  // this curator is the one being followed. See Follow below for why
+  // both directions are needed as separate relations.
+  following   Follow[] @relation("CuratorFollowing")
+  followedBy  Follow[] @relation("CuratorFollowedBy")
+
+  collectionLikes     CollectionLike[]
+  collectionItemLikes CollectionItemLike[]
+
+  // Titles this curator brought into the catalogue via "Add a title
+  // not on Kilig" (see submitTitleFromLink() in curator-actions.ts) —
+  // separate from collections, which can hold any title, not just
+  // ones this curator personally introduced.
+  submittedTitles Title[]
+
+  @@map("curators")
+}
+
+// The primary object of this feature (see ARCHITECTURE.md) — not a
+// post, not a discussion thread. Deliberately just a name for now:
+// no description/cover-image/visibility fields yet, since the MVP is
+// exactly one Collection type (public, non-collaborative) and adding
+// those fields before the core save-a-title loop is validated would
+// be building ahead of the experiment this is meant to run.
+model Collection {
+  id         String    @id @default(uuid())
+  // Ownership is exactly one of curatorId / platformId, never both,
+  // never neither — enforced in createCollectionAction()/
+  // updateCollectionAction(), not the database. Prisma's schema
+  // language can't express an XOR constraint any more than it could
+  // express the partial unique indexes already hand-written for
+  // reacted/hook_vote (see UserInteraction's comment above) — same
+  // division of labor, application-enforced.
+  curatorId  String?   @map("curator_id")
+  curator    Curator?  @relation("CuratorCollections", fields: [curatorId], references: [id], onDelete: Cascade)
+  platformId String?   @map("platform_id")
+  platform   Platform? @relation("PlatformCollection", fields: [platformId], references: [id], onDelete: Cascade)
+
+  // Reverse side of Curator.featuredCollection — which curator has
+  // pinned this Collection as their featured shelf.
+  featuredBy Curator?  @relation("FeaturedCollection")
+
+  name        String
+  // The collection's "emotional hook" — the curator's one-line feeling
+  // for the whole collection, separate from individual title notes.
+  // "The ones where the countryside is peaceful but the relationship absolutely isn't."
+  // Optional but encouraged — this is what transforms a list into a story.
+  description String?
+
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  items      CollectionItem[]
+  likes      CollectionLike[]
+
+  @@index([curatorId])
+  @@index([platformId])
+  @@map("collections")
+}
+
+// One saved title inside a Collection, with the curator's one-line
+// note — the entire "add" action described in the doc: save, one
+// line, done. @@unique prevents the same title being added to the
+// same Collection twice (re-adding just edits the note instead — see
+// addToCollection() in lib/curator-actions.ts). Note length (140 max)
+// is enforced in that action, not here — same division of labor as
+// the rest of this codebase (e.g. episode-number bounds checked in
+// actions.ts, not the schema).
+model CollectionItem {
+  id           String     @id @default(uuid())
+  collectionId String     @map("collection_id")
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  titleId      String     @map("title_id")
+  title        Title      @relation(fields: [titleId], references: [id], onDelete: Cascade)
+
+  note         String
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  likes        CollectionItemLike[]
+
+  @@unique([collectionId, titleId])
+  @@index([titleId])
+  @@map("collection_items")
+}
+
+// The follow mechanic — built and recorded unconditionally from day
+// one, since it's the only way to actually test whether curation
+// drives fandom (see ARCHITECTURE.md). What's gated is not whether
+// this table gets written to, only what a *visitor* sees rendered
+// from it — see MIN_FOLLOWERS_FOR_PUBLIC_DISPLAY in
+// lib/curator-actions.ts. followerId/followingId both point at
+// Curator, so this needs two distinctly-named relations (Prisma can't
+// infer which is which from a single self-relation) — "CuratorFollowing"
+// is the follower's own list of who they follow, "CuratorFollowedBy" is
+// the target's list of who follows them.
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String   @map("follower_id")
+  follower    Curator  @relation("CuratorFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  followingId String   @map("following_id")
+  following   Curator  @relation("CuratorFollowedBy", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([followerId, followingId])
+  @@index([followingId])
+  @@map("follows")
+}
+
+// Two distinct "like" surfaces, both scoped to a Curator (not the
+// anonymous sessionId) since liking is an identity-attached act here,
+// same as following — see the gating note in curator.ts and
+// ARCHITECTURE.md's Collections section. These are separate from the
+// existing TitleReaction model (actions.ts): TitleReaction is an
+// anonymous, per-session emoji reaction to a *title itself* — these
+// are a claimed curator vouching for a specific *curation*, either a
+// whole Collection or one curator's specific pick-plus-note within
+// it. Liking a Collection and liking one of its items are tracked
+// separately on purpose: someone might love one pick in an otherwise
+// unremarkable Collection, or love the Collection as a whole without
+// calling out any single entry.
+model CollectionLike {
+  id           String     @id @default(uuid())
+  curatorId    String     @map("curator_id")
+  curator      Curator    @relation(fields: [curatorId], references: [id], onDelete: Cascade)
+  collectionId String     @map("collection_id")
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@unique([curatorId, collectionId])
+  @@index([collectionId])
+  @@map("collection_likes")
+}
+
+// A partner platform's own voice on their /platform/[slug] page — e.g.
+// "New season of X drops Friday." Deliberately rendered ONLY there,
+// never on the homepage or /buzz: it's the platform speaking, not
+// Kilig's neutral discovery surfaces, and keeping it off the rails
+// preserves the split between fan-curator and platform-curator voices
+// (see PARTNER_PUBLISHING_PLAN.md). Same reasoning as TrendPost being
+// admin-only on /buzz — contained to the owner's own page, not blended
+// into rails that are otherwise entirely fandom-signal-driven.
+model PlatformAnnouncement {
+  id         String   @id @default(uuid())
+  platformId String   @map("platform_id")
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  // Optional link to a specific Title the announcement is about — lets
+  // the announcement anchor to a title card/button on the platform page.
+  titleId    String?  @map("title_id")
+  title      Title?   @relation(fields: [titleId], references: [id], onDelete: SetNull)
+
+  headline   String
+  body       String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([platformId])
+  @@map("platform_announcements")
+}
+
+// The public "Buzz" page (/buzz) — a fixed-length rolling window of
+// Trend Scout signals an admin has chosen to push out, not an
+// archive of everything the scan finds. See trendPosts.ts for the
+// cap/trim logic and publishTrendPost()'s doc comment for why only
+// title + url + source + the admin's own note are stored here and
+// never the scraped feed snippet — trendScout.ts flagged republishing
+// that snippet publicly as a real concern, not just a style choice.
+model TrendPost {
+  id          String    @id @default(uuid())
+  title       String
+  url         String    @unique
+  source      String
+  // The admin's own short line, same pattern/length cap as
+  // CollectionItem.note (curator-actions.ts) — never the auto-scraped
+  // snippet from getTrendSignals().
+  note        String?
+  // Original publish date from the feed item, if the feed provided
+  // one — purely informational, NOT what orders the list (createdAt
+  // is, since re-pushing an older story should still bump it fresh
+  // to the top).
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("trend_posts")
+}
+
+model CollectionItemLike {
+  id               String         @id @default(uuid())
+  curatorId        String         @map("curator_id")
+  curator          Curator        @relation(fields: [curatorId], references: [id], onDelete: Cascade)
+  collectionItemId String         @map("collection_item_id")
+  collectionItem   CollectionItem @relation(fields: [collectionItemId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  @@unique([curatorId, collectionItemId])
+  @@index([collectionItemId])
+  @@map("collection_item_likes")
+}
+
+// Minimal key-value store for admin-editable runtime flags that don't
+// warrant their own table. First (only, for now) use: HERO_MODE, which
+// switches the homepage hero between admin's manual picks
+// (Title.heroRank) and the real most-collected query once there's
+// enough volume for the latter to be honest — see lib/hero.ts. A
+// row's absence means "off"/default, same as every other optional
+// column in this schema defaulting to unset rather than a magic
+// string; callers should never assume a row exists.
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("app_settings")
+}

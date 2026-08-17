@@ -1,0 +1,348 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { runMission } from "@/lib/discovery/mission";
+import type {
+  DiscoveryMission,
+  DiscoveryRunResult,
+  DiscoverySource,
+  DuplicatePolicy,
+  ImportedDiscoveryItem,
+  ImportMode,
+} from "@/lib/discovery/types";
+
+const inputClass =
+  "w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--text)] focus:border-[var(--accent-marigold)] focus:outline-none";
+const labelClass = "mb-1.5 block font-mono text-xs uppercase tracking-wide text-[var(--text-muted)]";
+
+const MISSIONS: DiscoveryMission[] = ["manualUrls", "topCharts", "latest", "genre", "mood", "search"];
+const DUPLICATE_POLICIES: DuplicatePolicy[] = ["review", "skip", "import"];
+const IMPORT_MODES: ImportMode[] = ["draft", "publish"];
+
+/**
+ * What each source plugin actually supports right now, surfaced
+ * directly in the UI instead of only living in the plugin files'
+ * doc comments. Automated catalog crawling (ReelShort/ShortMax) and
+ * automated fetching at all (DramaBox) were deliberately not built —
+ * see reelshort.ts / shortmax.ts / dramabox.ts — so this is telling
+ * the admin what's true, not a bug to work around.
+ */
+const SOURCE_STATUS: Partial<Record<DiscoverySource, { tag: string; note: string; blocked?: boolean }>> = {
+  ReelShort: {
+    tag: "manual links only",
+    note:
+      "Paste specific ReelShort URLs you've chosen (mission: manualUrls). Automated crawling of ReelShort's own listing pages was deliberately removed — that would mean scraping their catalog against their Terms of Service.",
+  },
+  ShortMax: {
+    tag: "manual links only",
+    note:
+      "Paste specific ShortMax URLs you've chosen (mission: manualUrls). Automated crawling of ShortMax's own listing pages was deliberately removed — same reasoning as ReelShort.",
+  },
+  DramaBox: {
+    tag: "blocked",
+    blocked: true,
+    note:
+      "DramaBox blocks automated fetches (confirmed bot-detection response, not a guess). Bulk discovery isn't implemented for this source, and won't be by working around that block — add DramaBox titles via the manual admin form instead.",
+  },
+};
+
+interface DiscoveryMissionRunnerProps {
+  sources: DiscoverySource[];
+}
+
+export function DiscoveryMissionRunner({ sources }: DiscoveryMissionRunnerProps) {
+  const [source, setSource] = useState<DiscoverySource | "">(sources[0] ?? "");
+  const [mission, setMission] = useState<DiscoveryMission>("manualUrls");
+  const [urlsText, setUrlsText] = useState("");
+  const [quantity, setQuantity] = useState(10);
+  const [duplicatePolicy, setDuplicatePolicy] = useState<DuplicatePolicy>("review");
+  const [importMode, setImportMode] = useState<ImportMode>("draft");
+
+  const [result, setResult] = useState<DiscoveryRunResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function handleRun() {
+    setError(null);
+    setResult(null);
+    if (!source) {
+      setError("Pick a source first.");
+      return;
+    }
+    const urls = urlsText
+      .split("\n")
+      .map((u) => u.trim())
+      .filter(Boolean);
+    if (mission === "manualUrls" && urls.length === 0) {
+      setError("Paste at least one URL first.");
+      return;
+    }
+    startTransition(async () => {
+      try {
+        const runResult = await runMission({
+          source,
+          mission,
+          quantity,
+          urls: mission === "manualUrls" ? urls : undefined,
+          duplicatePolicy,
+          importMode,
+        });
+        setResult(runResult);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Mission failed for an unknown reason.");
+      }
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass} htmlFor="source">Source</label>
+          <select
+            id="source"
+            value={source}
+            onChange={(e) => setSource(e.target.value as DiscoverySource)}
+            className={inputClass}
+          >
+            {sources.length === 0 && <option value="">No sources registered</option>}
+            {sources.map((s) => {
+              const status = SOURCE_STATUS[s];
+              return (
+                <option key={s} value={s}>
+                  {s}
+                  {status ? ` — ${status.tag}` : ""}
+                </option>
+              );
+            })}
+          </select>
+          {source && SOURCE_STATUS[source] && (
+            <p
+              className={`mt-1 text-xs ${
+                SOURCE_STATUS[source]!.blocked ? "text-[var(--accent-rose)]" : "text-[var(--text-muted)]"
+              }`}
+            >
+              {SOURCE_STATUS[source]!.note}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className={labelClass} htmlFor="mission">Mission</label>
+          <select
+            id="mission"
+            value={mission}
+            onChange={(e) => setMission(e.target.value as DiscoveryMission)}
+            className={inputClass}
+          >
+            {MISSIONS.map((m) => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-[var(--text-muted)]">
+            Not every plugin supports every mission yet — an unsupported combination fails clearly rather than
+            guessing. See the note under Source above for what&apos;s actually available on the platform
+            you&apos;ve picked.
+          </p>
+        </div>
+
+        {mission === "manualUrls" && (
+          <div className="col-span-2">
+            <label className={labelClass} htmlFor="urls">URLs (one per line)</label>
+            <textarea
+              id="urls"
+              rows={6}
+              value={urlsText}
+              onChange={(e) => setUrlsText(e.target.value)}
+              placeholder={"https://www.reelshort.com/episodes/...\nhttps://www.reelshort.com/episodes/..."}
+              className={inputClass}
+            />
+          </div>
+        )}
+
+        <div>
+          <label className={labelClass} htmlFor="quantity">Quantity</label>
+          <input
+            id="quantity"
+            type="number"
+            min={1}
+            max={50}
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, Math.min(50, Number(e.target.value) || 1)))}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass} htmlFor="duplicatePolicy">Duplicate policy</label>
+          <select
+            id="duplicatePolicy"
+            value={duplicatePolicy}
+            onChange={(e) => setDuplicatePolicy(e.target.value as DuplicatePolicy)}
+            className={inputClass}
+          >
+            {DUPLICATE_POLICIES.map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass} htmlFor="importMode">Import mode</label>
+          <select
+            id="importMode"
+            value={importMode}
+            onChange={(e) => setImportMode(e.target.value as ImportMode)}
+            className={inputClass}
+          >
+            {IMPORT_MODES.map((m) => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-[var(--text-muted)]">
+            Inert for now — every imported title lands unpublished either way, until the review screen exists.
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleRun}
+        disabled={isPending || sources.length === 0}
+        className="self-start rounded-xl bg-[var(--accent-marigold)] px-4 py-2.5 text-sm font-semibold text-[var(--bg)] transition-opacity hover:opacity-90 disabled:opacity-50"
+      >
+        {isPending ? "Running mission…" : "Run mission"}
+      </button>
+
+      {error && (
+        <p className="rounded-xl border border-[var(--accent-rose)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--accent-rose)]">
+          {error}
+        </p>
+      )}
+
+      {result && <MissionResultView result={result} />}
+    </div>
+  );
+}
+
+function MissionResultView({ result }: { result: DiscoveryRunResult }) {
+  const { summary, items, error, logs } = result;
+
+  return (
+    <div className="flex flex-col gap-4">
+      {error && (
+        <p className="rounded-xl border border-[var(--accent-rose)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--accent-rose)]">
+          {error}
+        </p>
+      )}
+
+      <div className="grid grid-cols-5 gap-2">
+        <SummaryStat label="Discovered" value={summary.totalDiscovered} />
+        <SummaryStat label="Imported" value={summary.imported} accent="marigold" />
+        <SummaryStat label="Duplicates" value={summary.duplicates} />
+        <SummaryStat label="Skipped" value={summary.skipped} />
+        <SummaryStat label="Failed" value={summary.failed} accent="rose" />
+      </div>
+      <p className="font-mono text-xs uppercase tracking-wide text-[var(--text-muted)]">
+        {(summary.durationMs / 1000).toFixed(1)}s
+      </p>
+
+      {items.length === 0 ? (
+        <p className="text-sm text-[var(--text-muted)]">No items discovered.</p>
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {items.map((item, i) => (
+            <MissionItemRow key={i} item={item} />
+          ))}
+        </ul>
+      )}
+
+      {logs.length > 0 && (
+        <details className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
+          <summary className="cursor-pointer font-mono text-xs uppercase tracking-wide text-[var(--text-muted)]">
+            Mission log ({logs.length})
+          </summary>
+          <ul className="mt-2 flex flex-col gap-1">
+            {logs.map((entry, i) => (
+              <li
+                key={i}
+                className={`font-mono text-xs ${
+                  entry.level === "error"
+                    ? "text-[var(--accent-rose)]"
+                    : entry.level === "warn"
+                      ? "text-[var(--accent-marigold)]"
+                      : "text-[var(--text-muted)]"
+                }`}
+              >
+                {entry.message}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </div>
+  );
+}
+
+function SummaryStat({ label, value, accent }: { label: string; value: number; accent?: "marigold" | "rose" }) {
+  const color = accent === "marigold" ? "text-[var(--accent-marigold)]" : accent === "rose" ? "text-[var(--accent-rose)]" : "text-[var(--text)]";
+  return (
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-center">
+      <p className={`text-lg font-semibold ${color}`}>{value}</p>
+      <p className="font-mono text-[10px] uppercase tracking-wide text-[var(--text-muted)]">{label}</p>
+    </div>
+  );
+}
+
+function MissionItemRow({ item }: { item: ImportedDiscoveryItem }) {
+  const { result, duplicate, imported, skipped, failure } = item;
+  const status = imported ? "imported" : skipped ? "skipped" : failure ? "failed" : "review";
+  const statusColor =
+    status === "imported"
+      ? "text-[var(--accent-marigold)]"
+      : status === "failed"
+        ? "text-[var(--accent-rose)]"
+        : "text-[var(--text-muted)]";
+
+  return (
+    <li className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate text-sm text-[var(--text)]">{result.title.name ?? "(no name extracted)"}</p>
+          <a
+            href={result.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="block truncate text-xs text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
+          >
+            {result.sourceUrl}
+          </a>
+        </div>
+        <span className={`shrink-0 font-mono text-[10px] uppercase tracking-wide ${statusColor}`}>{status}</span>
+      </div>
+
+      {duplicate.isDuplicate && (
+        <p className="mt-1.5 text-xs text-[var(--text-muted)]">
+          Similar to existing title <span className="text-[var(--text)]">{duplicate.existingTitleName}</span> (
+          {(duplicate.score * 100).toFixed(0)}%)
+        </p>
+      )}
+      {failure && <p className="mt-1.5 text-xs text-[var(--accent-rose)]">{failure}</p>}
+      {result.warnings.length > 0 && (
+        <ul className="mt-1.5 flex flex-col gap-0.5">
+          {result.warnings.map((w, i) => (
+            <li key={i} className="text-xs text-[var(--text-muted)]">
+              {w.field !== "*" && <span className="font-mono">{w.field}: </span>}
+              {w.message}
+            </li>
+          ))}
+        </ul>
+      )}
+      {result.missingFields.length > 0 && (
+        <p className="mt-1.5 text-xs text-[var(--text-muted)]">
+          Missing: {result.missingFields.join(", ")}
+        </p>
+      )}
+    </li>
+  );
+}
