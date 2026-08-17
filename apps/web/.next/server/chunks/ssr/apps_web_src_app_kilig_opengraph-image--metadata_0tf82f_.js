@@ -1,3 +1,0 @@
-module.exports=[10804,a=>{"use strict";a.i(34777),a.i(26099);var b=a.i(78484);let c={alt:"Kilig — find your next obsession",contentType:"image/png",size:{width:1200,height:630}};async function d(a){let{__metadata_id__:d,...e}=await a.params,f=(0,b.fillMetadataSegment)("/kilig",e,"opengraph-image",!1);return[function(a){let b={alt:a.alt,type:a.contentType||"image/png",url:f+"?dfb74f2107169a3d"},{size:c}=a;return c&&(b.width=c.width,b.height=c.height),b}(c)]}a.s(["default",0,d],10804)},56992,function(a){a.n(a.i(10804))}];
-
-//# sourceMappingURL=apps_web_src_app_kilig_opengraph-image--metadata_0tf82f_.js.map
