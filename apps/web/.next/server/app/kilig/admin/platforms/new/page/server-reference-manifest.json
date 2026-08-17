@@ -1,0 +1,16 @@
+{
+  "node": {
+    "60b996aaed7865c233a19416b115832076e23eeaee": {
+      "workers": {
+        "app/kilig/admin/platforms/new/page": {
+          "moduleId": 43866,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "createPlatformAccount",
+      "filename": "apps/web/src/lib/platform-admin-actions.ts"
+    }
+  },
+  "edge": {}
+}

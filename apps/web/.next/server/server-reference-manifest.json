@@ -1,0 +1,1940 @@
+{
+  "node": {
+    "006075781b91840c80826dabb9e78b71f14396470f": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "getMyCollections"
+    },
+    "0086f528c444ad2dcc453a24eaa927aa38cdc6b350": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/settings/page": {
+          "moduleId": 85681,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "removeCuratorAvatar"
+    },
+    "00de4bb87fc60cf49397312dd25d696736dc3526f0": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "getCuratorDirectory"
+    },
+    "00fa6a8156d94b13dc628fc47c423c58ddf8d2e57f": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "getCurrentCurator"
+    },
+    "40255db7cfb75cc6ab6778e5057b8aba0a32bbe9ce": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "getCollectionsFeaturingTitle"
+    },
+    "403de90d39a54667a0140fead61f27baab438d6855": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "isFollowing"
+    },
+    "4041d00019ba73837f7c0c569a319c09774df33c6f": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "unlikeCollection"
+    },
+    "404e8a483a7ce4cabcc7960b92a6bc199da2448122": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "likeCollection"
+    },
+    "406737d8515201e7fc68fd27c2917df493a2e9ab84": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "getCollectionItemLikeStates"
+    },
+    "406df9efab294892fce2ce8ed843dd36b79eb27e17": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "unfollowCurator"
+    },
+    "407308e294571fb1ec8a5625b1ee0e12adc0512406": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "followCurator"
+    },
+    "408d5c777b20d1524c263410bc1c34ac560b6662b3": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "getCollectionLikeState"
+    },
+    "40d3fce2d335394b49fd621089bd88e0b707e5e8fe": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "getRecentCollections"
+    },
+    "6001cef2818b1d3695f4cdf37159063c67f8e45ad7": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/settings/page": {
+          "moduleId": 85681,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "updateCuratorAvatar"
+    },
+    "601f9f35b6602de9b4dc4ad3f11b32ccc00119bc8c": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/reclaim/page": {
+          "moduleId": 58778,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "reclaimCurator"
+    },
+    "6059261a6db5d3cd273425d25aecbe1e40d32195b0": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/settings/page": {
+          "moduleId": 85681,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "deleteAccount"
+    },
+    "605bd723d3e117cef451c8cedff1762f4a7c0bc775": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "getFollowerDisplay"
+    },
+    "606514b35eefd649ca0af3870db8d038718f27c5ed": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "addToCollection"
+    },
+    "60687b66bb607f3982d138ca94ae3fe64117b25afb": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/settings/page": {
+          "moduleId": 85681,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "setFeaturedCollection"
+    },
+    "606c6e8041eaf31c7975a2e019f9bd6b440685bf06": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "unlikeCollectionItem"
+    },
+    "608223b1ad392801f30b0b48e01dbd9cab21858cac": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "submitTitleFromLink"
+    },
+    "60a05dd9e52edd2a2c59a9b1c66006dced92e53a7f": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "removeFromCollection"
+    },
+    "60a976cee8e31f54dd4eab26abc1b43ccf0e26f0ed": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "claimDisplayName"
+    },
+    "60afaabce2f985add9dab6ba1aba86f386be92182f": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/signin/page": {
+          "moduleId": 43925,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "signInWithEmail"
+    },
+    "60df9839ba51fc2f343dd39e896bbc7b8c6c39f96e": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "likeCollectionItem"
+    },
+    "60e94a06251c7fd3e701e47739920cbcd7cac592d5": {
+      "workers": {
+        "app/kilig/claim/page": {
+          "moduleId": 69072,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/new/page": {
+          "moduleId": 17261,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curator/[displayName]/page": {
+          "moduleId": 20553,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/curators/page": {
+          "moduleId": 56882,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/page": {
+          "moduleId": 42147,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/curator-actions.ts",
+      "exportedName": "createCollection"
+    },
+    "000a4bc92ea4e27ad20701c817e98cf146ca6df999": {
+      "workers": {
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/admin-actions.ts",
+      "exportedName": "logoutAdminAction"
+    },
+    "601d2fd6c89b3c5cebbc1737201494b45e55152661": {
+      "workers": {
+        "app/kilig/admin/login/page": {
+          "moduleId": 77152,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/admin-actions.ts",
+      "exportedName": "loginAdminAction"
+    },
+    "604ca74753c2eb1770181d5aa2fc8039dbd1fa2ee0": {
+      "workers": {
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/admin-actions.ts",
+      "exportedName": "changeAdminPasswordAction"
+    },
+    "60cd3e4b7e5367e5508f8dfe227e03654779fba343": {
+      "workers": {
+        "app/kilig/admin/login/page": {
+          "moduleId": 77152,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/admin-actions.ts",
+      "exportedName": "recoverAdminAction"
+    },
+    "4033fd448226adf279fbfa1d016e8625aa1a711f0a": {
+      "workers": {
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/reset-actions.ts",
+      "exportedName": "generateUserResetToken"
+    },
+    "00e99482de6bac4bf2a4f44fc1577f107373cab059": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/discovery/mission.ts",
+      "exportedName": "getRegisteredSources"
+    },
+    "40cc659fbb1f3fc128971d1148fcef5f0b36440cad": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/discovery/mission.ts",
+      "exportedName": "runMission"
+    },
+    "401959bf6c0c0c899cf17eaccbd254306ad5a2eb5b": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "deleteTitle"
+    },
+    "4028ecab8e5b21b528c9061406f1110fdb2ccbd5b3": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "logInteraction"
+    },
+    "40377ca929f941685a3ef3785d09abba7327006d95": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "createTitle"
+    },
+    "404af0655461c4e2d360993d4e252bdb48bbafc077": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "getReactedEmoji"
+    },
+    "40db14d52da58eb21f781a24e84827dc40dc2e8c67": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "getHookVoteSummary"
+    },
+    "6058d6810abba7e7652793c7f4c3365a7272dd2b05": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "deleteReaction"
+    },
+    "607efb4ff5047e2e0be9ac3549e25b08cc5b3b447b": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "deleteAvailability"
+    },
+    "6097297e4e5599bad98dd600de9781cdabecfaf1f8": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "addAvailability"
+    },
+    "60bc4ed82bcd9dd29505d965d6b1bda721ee98acdf": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "logReaction"
+    },
+    "60cd6adda991c12a6162beb19622b804a9d2c21aa2": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "logHookVoteFromForm"
+    },
+    "60d267e3374ad3c55a41434d8800f57c467861067d": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "addReaction"
+    },
+    "60fc2b4d43a57d2f0b2e972cdd62b6bdb95b6fe29a": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "updateTitle"
+    },
+    "70475c725f569fc98379855b3058bea079bc4a3b95": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/search/page": {
+          "moduleId": 88405,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "logSearch"
+    },
+    "70cd8bbfac3d542020674ed727058c16d9cc41b9ec": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "logWatchClick"
+    },
+    "70fdfc56518f630cfe8dee324daaaeefe0112b20bb": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/title/[id]/page": {
+          "moduleId": 30506,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/actions.ts",
+      "exportedName": "updateAvailability"
+    },
+    "0088acf4d52531879244efd7253b4af67ff3d44301": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/buzz/page": {
+          "moduleId": 66443,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/discovery/trendPosts.ts",
+      "exportedName": "listTrendPosts"
+    },
+    "40088a24a960afe11f2d9ff956658d30a01fd20d26": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/buzz/page": {
+          "moduleId": 66443,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/discovery/trendPosts.ts",
+      "exportedName": "publishTrendPost"
+    },
+    "408d9c74493728052775e57313e14f83971720270d": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/buzz/page": {
+          "moduleId": 66443,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/discovery/trendPosts.ts",
+      "exportedName": "removeTrendPost"
+    },
+    "40ccc1771252ce02fc55a7e3cdd768f4c6d9bcada4": {
+      "workers": {
+        "app/kilig/admin/discovery/page": {
+          "moduleId": 1432,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/discovery/trendScout.ts",
+      "exportedName": "getTrendSignals"
+    },
+    "40507bd62cac724009008ee0c22ac06c58c55da093": {
+      "workers": {
+        "app/kilig/admin/hero/page": {
+          "moduleId": 90653,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/hero-actions.ts",
+      "exportedName": "setHeroRankFromForm"
+    },
+    "4096edfbafe7eb69edd5483a6af9e157070daf1313": {
+      "workers": {
+        "app/kilig/admin/hero/page": {
+          "moduleId": 90653,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/hero-actions.ts",
+      "exportedName": "setHeroModeFromForm"
+    },
+    "40a72af68443e365a71ce2e0c475441151833f4ea5": {
+      "workers": {
+        "app/kilig/admin/hero/page": {
+          "moduleId": 90653,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/hero-actions.ts",
+      "exportedName": "clearHeroRankFromForm"
+    },
+    "60b996aaed7865c233a19416b115832076e23eeaee": {
+      "workers": {
+        "app/kilig/admin/platforms/new/page": {
+          "moduleId": 43866,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/platform-admin-actions.ts",
+      "exportedName": "createPlatformAccount"
+    },
+    "40be7eaa4c4e4a00297cb338c5a57d3a87b51bdfa7": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/adminForms.ts",
+      "exportedName": "deleteTitleFromForm"
+    },
+    "60137adb86098b5f5c0f53b3ed02331258fcbe7afa": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/adminForms.ts",
+      "exportedName": "addAvailabilityFromForm"
+    },
+    "6039c8cb0b558dfe175eab62eaaec1f5ff190fcb0f": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/new/page": {
+          "moduleId": 91853,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/adminForms.ts",
+      "exportedName": "createTitleAction"
+    },
+    "608aa745b1f3e9d493da4d78dcd3fd849b4522995b": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/adminForms.ts",
+      "exportedName": "deleteReactionFromForm"
+    },
+    "60cbdae405b380e2ba6c899a388440743132193c83": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/adminForms.ts",
+      "exportedName": "deleteAvailabilityFromForm"
+    },
+    "60e95e274f53d7181c5ef279ed1d3311a3a8f401a6": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/adminForms.ts",
+      "exportedName": "addReactionFromForm"
+    },
+    "60f8f69e8f66007de57cde14b60b35cc164fecb79c": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/adminForms.ts",
+      "exportedName": "updateTitleFromForm"
+    },
+    "70773e3f417d71c015c2f46781d89259077bd1d605": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/[id]/page": {
+          "moduleId": 94107,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/adminForms.ts",
+      "exportedName": "updateAvailabilityFromForm"
+    },
+    "40c6759f708dd0db4d94266b4a875e7d280a6bd958": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        },
+        "app/kilig/admin/titles/new/page": {
+          "moduleId": 91853,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/fetchTitleMetadata.ts",
+      "exportedName": "fetchTitleMetadata"
+    },
+    "40a7ce8b95a4ba76fb23a6c5cdff44b27dcf921054": {
+      "workers": {
+        "app/kilig/collection/[id]/page": {
+          "moduleId": 89574,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/fetchTitleMetadata.ts",
+      "exportedName": "fetchTitleMetadataForCurator"
+    },
+    "00db70f0a2c69f1cc68c806b243475b32073df0a27": {
+      "workers": {
+        "app/kilig/platform/[slug]/page": {
+          "moduleId": 62821,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/platform-actions.ts",
+      "exportedName": "getMyPlatformTitles"
+    },
+    "00fb4127f85430043b251a0db6962c2918e2e336d6": {
+      "workers": {
+        "app/kilig/platform/[slug]/page": {
+          "moduleId": 62821,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/platform-actions.ts",
+      "exportedName": "getMyPlatformAnnouncements"
+    },
+    "40e4f0fc3319a6228fcc6da0acd4c876ed85479155": {
+      "workers": {
+        "app/kilig/platform/[slug]/page": {
+          "moduleId": 62821,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/platform-actions.ts",
+      "exportedName": "deletePlatformAnnouncement"
+    },
+    "6031d9e22de75c65d8935a96e3233e79baf00816e5": {
+      "workers": {
+        "app/kilig/platform/[slug]/page": {
+          "moduleId": 62821,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/platform-actions.ts",
+      "exportedName": "createPlatformAnnouncement"
+    },
+    "60369829c318472f358e511979caae01e8f9c6d669": {
+      "workers": {
+        "app/kilig/platform/[slug]/page": {
+          "moduleId": 62821,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/platform-actions.ts",
+      "exportedName": "submitTitleFromPlatform"
+    },
+    "607dd8ef40717af143dca980d34f288347409f984c": {
+      "workers": {
+        "app/kilig/platform/[slug]/page": {
+          "moduleId": 62821,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/platform-actions.ts",
+      "exportedName": "updatePlatformLogo"
+    },
+    "400037312a7f306bb1a31b2e789f02f40153f08051": {
+      "workers": {
+        "app/kilig/platform/[slug]/page": {
+          "moduleId": 62821,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/fetchTitleMetadata.ts",
+      "exportedName": "fetchTitleMetadataForPlatform"
+    },
+    "6023a4ad09a79862e448502d3291dd91a2ed8771ff": {
+      "workers": {
+        "app/kilig/reset-password/page": {
+          "moduleId": 36961,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "filename": "apps/web/src/lib/reset-actions.ts",
+      "exportedName": "resetPasswordWithToken"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "HLkqt/9Ys0RynYSqyPni5rbgf9zVUAyOUwZhVBy5yz4="
+}

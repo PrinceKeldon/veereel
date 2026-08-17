@@ -1,0 +1,27 @@
+{
+  "node": {
+    "6039c8cb0b558dfe175eab62eaaec1f5ff190fcb0f": {
+      "workers": {
+        "app/kilig/admin/titles/new/page": {
+          "moduleId": 91853,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "createTitleAction",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "40c6759f708dd0db4d94266b4a875e7d280a6bd958": {
+      "workers": {
+        "app/kilig/admin/titles/new/page": {
+          "moduleId": 91853,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "fetchTitleMetadata",
+      "filename": "apps/web/src/lib/fetchTitleMetadata.ts"
+    }
+  },
+  "edge": {}
+}

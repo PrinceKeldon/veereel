@@ -1,0 +1,38 @@
+{
+  "node": {
+    "0088acf4d52531879244efd7253b4af67ff3d44301": {
+      "workers": {
+        "app/kilig/buzz/page": {
+          "moduleId": 66443,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "listTrendPosts",
+      "filename": "apps/web/src/lib/discovery/trendPosts.ts"
+    },
+    "40088a24a960afe11f2d9ff956658d30a01fd20d26": {
+      "workers": {
+        "app/kilig/buzz/page": {
+          "moduleId": 66443,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "publishTrendPost",
+      "filename": "apps/web/src/lib/discovery/trendPosts.ts"
+    },
+    "408d9c74493728052775e57313e14f83971720270d": {
+      "workers": {
+        "app/kilig/buzz/page": {
+          "moduleId": 66443,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "removeTrendPost",
+      "filename": "apps/web/src/lib/discovery/trendPosts.ts"
+    }
+  },
+  "edge": {}
+}

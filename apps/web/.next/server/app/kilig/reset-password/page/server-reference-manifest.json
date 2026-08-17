@@ -1,0 +1,16 @@
+{
+  "node": {
+    "6023a4ad09a79862e448502d3291dd91a2ed8771ff": {
+      "workers": {
+        "app/kilig/reset-password/page": {
+          "moduleId": 36961,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "resetPasswordWithToken",
+      "filename": "apps/web/src/lib/reset-actions.ts"
+    }
+  },
+  "edge": {}
+}

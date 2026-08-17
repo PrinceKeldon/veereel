@@ -1,0 +1,49 @@
+{
+  "node": {
+    "6059261a6db5d3cd273425d25aecbe1e40d32195b0": {
+      "workers": {
+        "app/kilig/settings/page": {
+          "moduleId": 85681,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "deleteAccount",
+      "filename": "apps/web/src/lib/curator-actions.ts"
+    },
+    "6001cef2818b1d3695f4cdf37159063c67f8e45ad7": {
+      "workers": {
+        "app/kilig/settings/page": {
+          "moduleId": 85681,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "updateCuratorAvatar",
+      "filename": "apps/web/src/lib/curator-actions.ts"
+    },
+    "0086f528c444ad2dcc453a24eaa927aa38cdc6b350": {
+      "workers": {
+        "app/kilig/settings/page": {
+          "moduleId": 85681,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "removeCuratorAvatar",
+      "filename": "apps/web/src/lib/curator-actions.ts"
+    },
+    "60687b66bb607f3982d138ca94ae3fe64117b25afb": {
+      "workers": {
+        "app/kilig/settings/page": {
+          "moduleId": 85681,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "setFeaturedCollection",
+      "filename": "apps/web/src/lib/curator-actions.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,269 @@
+{
+  "node": {
+    "40be7eaa4c4e4a00297cb338c5a57d3a87b51bdfa7": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "deleteTitleFromForm",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "60137adb86098b5f5c0f53b3ed02331258fcbe7afa": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "addAvailabilityFromForm",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "6039c8cb0b558dfe175eab62eaaec1f5ff190fcb0f": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "createTitleAction",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "608aa745b1f3e9d493da4d78dcd3fd849b4522995b": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "deleteReactionFromForm",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "60cbdae405b380e2ba6c899a388440743132193c83": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "deleteAvailabilityFromForm",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "60e95e274f53d7181c5ef279ed1d3311a3a8f401a6": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "addReactionFromForm",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "60f8f69e8f66007de57cde14b60b35cc164fecb79c": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "updateTitleFromForm",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "70773e3f417d71c015c2f46781d89259077bd1d605": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "updateAvailabilityFromForm",
+      "filename": "apps/web/src/lib/adminForms.ts"
+    },
+    "401959bf6c0c0c899cf17eaccbd254306ad5a2eb5b": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "deleteTitle",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "4028ecab8e5b21b528c9061406f1110fdb2ccbd5b3": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "logInteraction",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "40377ca929f941685a3ef3785d09abba7327006d95": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "createTitle",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "404af0655461c4e2d360993d4e252bdb48bbafc077": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getReactedEmoji",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "40db14d52da58eb21f781a24e84827dc40dc2e8c67": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getHookVoteSummary",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "6058d6810abba7e7652793c7f4c3365a7272dd2b05": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "deleteReaction",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "607efb4ff5047e2e0be9ac3549e25b08cc5b3b447b": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "deleteAvailability",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "6097297e4e5599bad98dd600de9781cdabecfaf1f8": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "addAvailability",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "60bc4ed82bcd9dd29505d965d6b1bda721ee98acdf": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "logReaction",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "60cd6adda991c12a6162beb19622b804a9d2c21aa2": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "logHookVoteFromForm",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "60d267e3374ad3c55a41434d8800f57c467861067d": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "addReaction",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "60fc2b4d43a57d2f0b2e972cdd62b6bdb95b6fe29a": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "updateTitle",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "70475c725f569fc98379855b3058bea079bc4a3b95": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "logSearch",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "70cd8bbfac3d542020674ed727058c16d9cc41b9ec": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "logWatchClick",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "70fdfc56518f630cfe8dee324daaaeefe0112b20bb": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "updateAvailability",
+      "filename": "apps/web/src/lib/actions.ts"
+    },
+    "40c6759f708dd0db4d94266b4a875e7d280a6bd958": {
+      "workers": {
+        "app/kilig/admin/titles/[id]/edit/page": {
+          "moduleId": 46817,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "fetchTitleMetadata",
+      "filename": "apps/web/src/lib/fetchTitleMetadata.ts"
+    }
+  },
+  "edge": {}
+}

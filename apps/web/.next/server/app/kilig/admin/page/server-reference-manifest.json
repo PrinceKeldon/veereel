@@ -1,0 +1,60 @@
+{
+  "node": {
+    "000a4bc92ea4e27ad20701c817e98cf146ca6df999": {
+      "workers": {
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "logoutAdminAction",
+      "filename": "apps/web/src/lib/admin-actions.ts"
+    },
+    "601d2fd6c89b3c5cebbc1737201494b45e55152661": {
+      "workers": {
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "loginAdminAction",
+      "filename": "apps/web/src/lib/admin-actions.ts"
+    },
+    "604ca74753c2eb1770181d5aa2fc8039dbd1fa2ee0": {
+      "workers": {
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "changeAdminPasswordAction",
+      "filename": "apps/web/src/lib/admin-actions.ts"
+    },
+    "60cd3e4b7e5367e5508f8dfe227e03654779fba343": {
+      "workers": {
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "recoverAdminAction",
+      "filename": "apps/web/src/lib/admin-actions.ts"
+    },
+    "4033fd448226adf279fbfa1d016e8625aa1a711f0a": {
+      "workers": {
+        "app/kilig/admin/page": {
+          "moduleId": 44472,
+          "async": true,
+          "codeHash": null
+        }
+      },
+      "exportedName": "generateUserResetToken",
+      "filename": "apps/web/src/lib/reset-actions.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,12 @@
+:HL["/_next/static/chunks/3lfe28zve_hpi.css","style"]
+:HL["/_next/static/chunks/0uz2vqp6kx0zf.css","style"]
+:HL["/_next/static/chunks/38vtja04z5qjh.css","style"]
+:HL["/_next/static/media/6ad1cda2f16975ee-s.p.2j22bd4n1tlhh.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/media/797e433ab948586e-s.p.0r6juujl39pe6.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/media/caa3a2e1cccd8315-s.p.0wgildi0cnwt9.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["https://www.verticaldrama.tv/images/shows/16083192d3c9.jpg","image"]
+:HL["https://v-img.crazymaplestudios.com/v-images/book_cover_batch/200000000000005763/23e0b459-b324-46cb-addf-700aaf6fef01.jpg","image"]
+:HL["https://thwztchapter.dramaboxdb.com/data/cppartner/4x1/41x0/410x0/41000113988/41000113988.jpg","image"]
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"kilig","param":null,"prefetchHints":4192,"slots":{"children":{"name":"curators","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"x1vi0WKSntRISX10e5TnB"}
