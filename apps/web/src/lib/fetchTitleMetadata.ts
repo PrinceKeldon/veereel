@@ -29,7 +29,7 @@ export interface TitleMetadataResult {
    * the admin to fill in — never a guess.
    */
   castNames: string[];
-  /** Also JSON-LD only (datePublished / releasedEvent.startDate) — same reasoning as castNames. */
+  /** Also JSON-LD only (datePublished) — same reasoning as castNames. */
   releaseDate: string | null;
   error?: string;
 }
@@ -108,36 +108,23 @@ function resolveImageUrl(rawUrl: string, baseUrl: URL): string | null {
 /**
  * Parses every JSON-LD <script> block on the page into plain objects,
  * silently skipping anything malformed (common enough on real sites
- * not to treat as a fetch failure). Traverses `@graph` containers so
- * nested nodes — a TVSeries/TVEpisode array published under `@graph`,
- * which is how ReelShort and several other vertical-drama platforms
- * structure theirs — land in the same flat list as top-level nodes,
- * so the extractors below don't miss them. Shared by every
- * structured-data extractor rather than each re-scanning/re-parsing
- * the HTML separately.
+ * not to treat as a fetch failure). Shared by every structured-data
+ * extractor below rather than each re-scanning/re-parsing the HTML
+ * separately.
  */
 function parseJsonLdEntries(html: string): Record<string, unknown>[] {
   const blocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) ?? [];
   const entries: Record<string, unknown>[] = [];
 
-  function collect(node: unknown): void {
-    if (Array.isArray(node)) {
-      for (const item of node) collect(item);
-      return;
-    }
-    if (!node || typeof node !== "object") return;
-    const obj = node as Record<string, unknown>;
-    if (Array.isArray(obj["@graph"])) {
-      for (const item of obj["@graph"]) collect(item);
-    }
-    entries.push(obj);
-  }
-
   for (const block of blocks) {
     const jsonMatch = block.match(/>([\s\S]*?)<\/script>/i);
     if (!jsonMatch?.[1]) continue;
     try {
-      collect(JSON.parse(jsonMatch[1].trim()));
+      const parsed = JSON.parse(jsonMatch[1].trim());
+      const candidates = Array.isArray(parsed) ? parsed : [parsed];
+      for (const entry of candidates) {
+        if (entry && typeof entry === "object") entries.push(entry as Record<string, unknown>);
+      }
     } catch {
       continue;
     }
@@ -185,17 +172,11 @@ function extractCastNamesFromJsonLd(entries: Record<string, unknown>[]): string[
   return [];
 }
 
-/** schema.org's datePublished — with releasedEvent.startDate as the common platform alternative — same JSON-LD-only reasoning as castNames. Returned as-is (ISO-ish string); parsing/validation happens at the form boundary. */
+/** schema.org's datePublished — same JSON-LD-only reasoning as castNames. Returned as-is (ISO-ish string); parsing/validation happens at the form boundary. */
 function extractReleaseDateFromJsonLd(entries: Record<string, unknown>[]): string | null {
   for (const entry of entries) {
-    if (typeof entry.datePublished === "string" && entry.datePublished.trim().length > 0) {
-      return entry.datePublished.trim();
-    }
-    const releasedEvent = entry.releasedEvent;
-    if (releasedEvent && typeof releasedEvent === "object") {
-      const startDate = (releasedEvent as Record<string, unknown>).startDate;
-      if (typeof startDate === "string" && startDate.trim().length > 0) return startDate.trim();
-    }
+    const date = entry.datePublished;
+    if (typeof date === "string" && date.trim().length > 0) return date.trim();
   }
   return null;
 }

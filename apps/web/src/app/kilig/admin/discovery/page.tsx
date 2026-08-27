@@ -9,7 +9,7 @@ import { TrendScoutPanel } from "@/components/admin/TrendScoutPanel";
 import { PublishedTrendPosts } from "@/components/admin/PublishedTrendPosts";
 
 export default async function DiscoveryPage() {
-  if (!(await isAdminSession())) redirect("/kilig/admin/login");
+  if (!(await isAdminSession())) redirect("/admin/login");
 
   const sources = await getRegisteredSources();
   const trendPosts = await listTrendPosts();
@@ -17,7 +17,7 @@ export default async function DiscoveryPage() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-14 pb-20">
       <Link
-        href="/kilig/admin"
+        href="/admin"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />

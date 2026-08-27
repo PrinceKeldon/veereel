@@ -31,7 +31,7 @@ export default async function CuratorsPage() {
             <div key={curator.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
               {/* Curator header */}
               <Link
-                href={`/kilig/curator/${curator.displayName}`}
+                href={`/curator/${curator.displayName}`}
                 className="group flex items-center gap-4 transition-colors hover:text-[var(--accent-marigold)]"
               >
                 <CuratorAvatar displayName={curator.displayName} avatarUrl={curator.avatarUrl} size={56} />
@@ -56,7 +56,7 @@ export default async function CuratorsPage() {
                   {curator.collections.slice(0, 3).map((collection) => (
                     <Link
                       key={collection.id}
-                      href={`/kilig/collection/${collection.id}`}
+                      href={`/collection/${collection.id}`}
                       className="group flex gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-raised)] p-2.5 transition-colors hover:border-[var(--accent-marigold)]"
                     >
                       {/* Thumbnail image */}

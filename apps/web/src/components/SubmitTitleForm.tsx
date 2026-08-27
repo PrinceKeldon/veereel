@@ -184,7 +184,7 @@ export function SubmitTitleForm({ collectionId }: SubmitTitleFormProps) {
               <p className="text-sm text-[var(--text)]">{state.error}</p>
               {state.duplicateOf && (
                 <Link
-                  href={`/kilig/title/${state.duplicateOf.id}`}
+                  href={`/title/${state.duplicateOf.id}`}
                   className="mt-1.5 inline-block text-sm text-[var(--accent-marigold)] hover:underline"
                 >
                   Save &ldquo;{state.duplicateOf.name}&rdquo; to this Collection instead →

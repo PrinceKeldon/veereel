@@ -259,6 +259,11 @@ model Title {
   // the title page only when set; no embedded player.
   trailerUrl          String?  @map("trailer_url")
 
+  // Real posting history for the admin content-generation dashboard
+  // (was previously client-only useState, lost on refresh — see
+  // ContentPost model at the end of this file for the reasoning).
+  contentPosts        ContentPost[]
+
   // Taxonomy — normalized and auto-registered into TagDefinition by
   // createTitle() (see lib/actions.ts): typing a new tag grows the
   // vocabulary rather than being rejected, so TagDefinition stays a
@@ -697,4 +702,36 @@ model AppSetting {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("app_settings")
+}
+
+// Real persistence for the admin content-generation dashboard's "mark
+// as posted" step (/admin/content-daily-routine — see
+// lib/contentTemplates.ts for the caption side). The original build of
+// this feature tracked posted status in client-only useState, which
+// reset on every page refresh and never actually recorded anything —
+// this table is what makes "posted" a fact you can come back to later,
+// not a session-scoped UI toggle. `caption` stores the exact text that
+// was actually copied and posted (not re-derived from `format` later,
+// since template wording may change over time and the historical
+// record should reflect what really went out, not what the current
+// template would generate today).
+model ContentPost {
+  id        String   @id @default(uuid())
+  titleId   String   @map("title_id")
+  title     Title    @relation(fields: [titleId], references: [id], onDelete: Cascade)
+
+  // One of contentTemplates.ts's format ids (e.g. "what_are_you_watching") —
+  // plain string, not a Prisma enum, matching this schema's existing
+  // convention for this kind of small closed vocabulary (see
+  // Availability.platform).
+  format    String
+  platform  String
+  caption   String
+  postUrl   String   @map("post_url")
+
+  postedAt  DateTime @default(now()) @map("posted_at")
+
+  @@index([titleId])
+  @@index([postedAt])
+  @@map("content_posts")
 }

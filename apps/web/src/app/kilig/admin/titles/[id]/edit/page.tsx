@@ -16,7 +16,7 @@ interface EditTitlePageProps {
 }
 
 export default async function EditTitlePage({ params }: EditTitlePageProps) {
-  if (!(await isAdminSession())) redirect("/kilig/admin/login");
+  if (!(await isAdminSession())) redirect("/admin/login");
 
   const { id } = await params;
   const title = await prisma.title.findUnique({ where: { id } });
@@ -45,7 +45,7 @@ export default async function EditTitlePage({ params }: EditTitlePageProps) {
   return (
     <main className="mx-auto max-w-xl px-6 py-14 pb-20">
       <Link
-        href={`/kilig/admin/titles/${title.id}`}
+        href={`/admin/titles/${title.id}`}
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />

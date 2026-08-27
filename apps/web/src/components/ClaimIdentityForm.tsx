@@ -37,8 +37,11 @@ export function ClaimIdentityForm() {
         disabled={isPending}
         className="rounded-xl bg-[var(--accent-marigold)] px-4 py-2.5 text-sm font-semibold text-[var(--bg)] transition-opacity hover:opacity-90 disabled:opacity-50"
       >
-{isPending ? "Claiming…" : "Claim this name"}
+        {isPending ? "Claiming…" : "Claim this name"}
       </button>
+      <p className="text-center text-[11px] text-[var(--text-muted)]">
+        Just the name for now — you&rsquo;ll add an email right after.
+      </p>
     </form>
   );
 }

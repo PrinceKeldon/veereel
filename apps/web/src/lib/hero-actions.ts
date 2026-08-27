@@ -33,7 +33,7 @@ export async function setHeroRankFromForm(formData: FormData): Promise<void> {
   ]);
 
   revalidatePath("/");
-  revalidatePath("/kilig/admin/hero");
+  revalidatePath("/admin/hero");
 }
 
 export async function clearHeroRankFromForm(formData: FormData): Promise<void> {
@@ -45,7 +45,7 @@ export async function clearHeroRankFromForm(formData: FormData): Promise<void> {
   await prisma.title.update({ where: { id: titleId }, data: { heroRank: null } });
 
   revalidatePath("/");
-  revalidatePath("/kilig/admin/hero");
+  revalidatePath("/admin/hero");
 }
 
 export async function setHeroModeFromForm(formData: FormData): Promise<void> {
@@ -63,5 +63,5 @@ export async function setHeroModeFromForm(formData: FormData): Promise<void> {
   });
 
   revalidatePath("/");
-  redirect("/kilig/admin/hero");
+  redirect("/admin/hero");
 }

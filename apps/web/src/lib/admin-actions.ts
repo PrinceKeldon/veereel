@@ -47,7 +47,7 @@ export async function loginAdminAction(
 
   const token = await issueAdminSession();
   await setAdminCookie(token);
-  redirect("/kilig/admin");
+  redirect("/admin");
 }
 
 export interface ChangeAdminPasswordState {
@@ -140,5 +140,5 @@ export async function recoverAdminAction(
 
 export async function logoutAdminAction(): Promise<void> {
   await clearAdminSession();
-  redirect("/kilig/admin/login");
+  redirect("/admin/login");
 }

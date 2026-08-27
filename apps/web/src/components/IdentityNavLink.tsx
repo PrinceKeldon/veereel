@@ -15,7 +15,7 @@ export async function IdentityNavLink() {
   if (curator) {
     return (
       <span className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <Link href={`/kilig/curator/${curator.displayName}`} className={linkClass}>
+        <Link href={`/curator/${curator.displayName}`} className={linkClass}>
           {curator.displayName}&rsquo;s Collections
         </Link>
         <Link href="/settings" className={linkClass}>

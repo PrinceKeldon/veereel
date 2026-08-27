@@ -23,7 +23,7 @@ export async function SaveToCollectionSection({ titleId }: SaveToCollectionSecti
       <CollapsibleSection label="Save to Collection">
         <p className="mb-3 text-sm text-[var(--text-muted)]">Claim a name to start curating your own Collections.</p>
         <Link
-          href={`/claim?next=${encodeURIComponent(`/kilig/title/${titleId}`)}`}
+          href={`/claim?next=${encodeURIComponent(`/title/${titleId}`)}`}
           className="inline-block rounded-xl border border-[var(--accent-marigold)] px-4 py-2 text-sm font-semibold text-[var(--accent-marigold)] transition-colors hover:bg-[var(--accent-marigold)]/10"
         >
           Claim a name
@@ -39,7 +39,7 @@ export async function SaveToCollectionSection({ titleId }: SaveToCollectionSecti
       <CollapsibleSection label="Save to Collection">
         <p className="mb-3 text-sm text-[var(--text-muted)]">Create your first Collection to start saving titles.</p>
         <Link
-          href="/kilig/collection/new"
+          href="/collection/new"
           className="inline-block rounded-xl border border-[var(--accent-marigold)] px-4 py-2 text-sm font-semibold text-[var(--accent-marigold)] transition-colors hover:bg-[var(--accent-marigold)]/10"
         >
           Create a Collection

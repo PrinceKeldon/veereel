@@ -24,7 +24,7 @@ export async function CuratedInSection({ titleId }: CuratedInSectionProps) {
         {collections.map((c) => (
           <li key={c.id}>
             <Link
-              href={`/kilig/collection/${c.id}`}
+              href={`/collection/${c.id}`}
               className="block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 transition-colors hover:border-[var(--accent-marigold)]"
             >
               <p className="text-sm text-[var(--text)]">

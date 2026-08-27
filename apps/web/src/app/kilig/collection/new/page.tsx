@@ -12,7 +12,7 @@ export default async function NewCollectionPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6">
-      <Link href={`/kilig/curator/${curator.displayName}`} className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]">
+      <Link href={`/curator/${curator.displayName}`} className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]">
         <ArrowLeft size={14} aria-hidden="true" />
         Back
       </Link>

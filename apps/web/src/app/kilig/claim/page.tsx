@@ -15,7 +15,7 @@ export default async function ClaimPage({ searchParams }: ClaimPageProps) {
   // Already claimed and somehow landed here anyway (e.g. a stale
   // link) — send them straight on to wherever they were headed
   // instead of making them re-claim.
-  if (curator) redirect(next && next.startsWith("/") ? next : `/kilig/curator/${curator.displayName}`);
+  if (curator) redirect(next && next.startsWith("/") ? next : `/curator/${curator.displayName}`);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6">

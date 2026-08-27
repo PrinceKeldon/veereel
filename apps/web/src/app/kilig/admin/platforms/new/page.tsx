@@ -8,7 +8,7 @@ import { CreatePlatformAccountForm } from "@/components/admin/CreatePlatformAcco
 export const metadata = { title: "New platform account" };
 
 export default async function NewPlatformPage() {
-  if (!(await isAdminSession())) redirect("/kilig/admin/login");
+  if (!(await isAdminSession())) redirect("/admin/login");
 
   // Show existing platforms so the admin can see at a glance what's
   // already provisioned (and avoid duplicate slugs/names).
@@ -26,7 +26,7 @@ export default async function NewPlatformPage() {
   return (
     <main className="mx-auto max-w-xl px-6 py-14 pb-20">
       <Link
-        href="/kilig/admin"
+        href="/admin"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />
@@ -55,7 +55,7 @@ export default async function NewPlatformPage() {
                 key={p.id}
                 className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--text)]"
               >
-                <Link href={`/kilig/platform/${p.slug}`} className="hover:text-[var(--accent-marigold)]">
+                <Link href={`/platform/${p.slug}`} className="hover:text-[var(--accent-marigold)]">
                   {p.name}
                 </Link>
                 <span className="font-mono text-[11px] uppercase text-[var(--text-muted)]">

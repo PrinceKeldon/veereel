@@ -151,7 +151,7 @@ export default async function PlatformPage({ params }: PlatformPageProps) {
                   {a.title && (
                     <>
                       {" · "}
-                      <Link href={`/kilig/title/${a.title.id}`} className="text-[var(--accent-marigold)] hover:underline">
+                      <Link href={`/title/${a.title.id}`} className="text-[var(--accent-marigold)] hover:underline">
                         {a.title.name}
                       </Link>
                     </>

@@ -35,7 +35,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     <main className="mx-auto max-w-6xl px-4 py-10 pb-16">
       {query && <SearchLogger query={query} resultCount={results.length} />}
       <Link
-        href="/kilig"
+        href="/"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />
@@ -50,7 +50,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {query && results.length === 0 && (
         <p className="text-[var(--text-muted)]">
           No titles found for &ldquo;{query}&rdquo;. Try a different name, or browse by mood on the{" "}
-          <Link href="/kilig" className="text-[var(--accent-marigold)] hover:underline">
+          <Link href="/" className="text-[var(--accent-marigold)] hover:underline">
             home page
           </Link>
           .

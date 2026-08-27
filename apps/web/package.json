@@ -4,9 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "if [ \"$VERCEL_ENV\" = \"production\" ]; then prisma migrate deploy; fi",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate",
+    "db:seed": "prisma db seed",
+    "db:migrate": "prisma migrate dev"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",

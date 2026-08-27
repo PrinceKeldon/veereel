@@ -135,7 +135,7 @@ export default async function TitleDetailPage({ params }: TitleDetailPageProps) 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 pb-16">
       <ViewLogger titleId={title.id} />
-      <Link href="/kilig" className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]">
+      <Link href="/" className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]">
         <ArrowLeft size={14} aria-hidden="true" />
         Back
       </Link>
@@ -167,7 +167,7 @@ export default async function TitleDetailPage({ params }: TitleDetailPageProps) 
               {seasons.map((s: { id: string; name: string; seasonNumber: number | null }) => (
                 <Link
                   key={s.id}
-                  href={`/kilig/title/${s.id}`}
+                  href={`/title/${s.id}`}
                   className={`rounded-full border px-2.5 py-1 font-mono text-[11px] uppercase transition-colors ${
                     s.id === title.id
                       ? "border-[var(--accent-marigold)] bg-[var(--accent-marigold)]/10 text-[var(--text)]"

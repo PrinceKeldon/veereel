@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Plus, Radar, Sparkles, Building2 } from "lucide-react";
+import { Plus, Radar, Sparkles, Building2, Calendar } from "lucide-react";
 import { isAdminSession } from "@/lib/admin";
 import { logoutAdminAction } from "@/lib/admin-actions";
 import { prisma } from "@/lib/prisma";
@@ -8,7 +8,7 @@ import { ResetPasswordPanel } from "@/components/admin/ResetPasswordPanel";
 import { ChangeAdminPasswordForm } from "@/components/admin/ChangeAdminPasswordForm";
 
 export default async function AdminPage() {
-  if (!(await isAdminSession())) redirect("/kilig/admin/login");
+  if (!(await isAdminSession())) redirect("/admin/login");
 
   const titles = await prisma.title.findMany({
     orderBy: { createdAt: "desc" },
@@ -59,32 +59,39 @@ export default async function AdminPage() {
 
       <div className="mb-7 flex flex-wrap gap-3">
         <Link
-          href="/kilig/admin/titles/new"
+          href="/admin/titles/new"
           className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--accent-marigold)] px-4 py-2.5 text-sm font-semibold text-[var(--bg)] transition-opacity hover:opacity-90"
         >
           <Plus size={16} aria-hidden="true" />
           New title
         </Link>
         <Link
-          href="/kilig/admin/discovery"
+          href="/admin/discovery"
           className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent-marigold)]"
         >
           <Radar size={16} aria-hidden="true" />
           Discovery
         </Link>
         <Link
-          href="/kilig/admin/hero"
+          href="/admin/hero"
           className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent-marigold)]"
         >
           <Sparkles size={16} aria-hidden="true" />
           Hero
         </Link>
         <Link
-          href="/kilig/admin/platforms/new"
+          href="/admin/platforms/new"
           className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent-marigold)]"
         >
           <Building2 size={16} aria-hidden="true" />
           New platform
+        </Link>
+        <Link
+          href="/admin/content-daily-routine"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent-marigold)]"
+        >
+          <Calendar size={16} aria-hidden="true" />
+          Daily Routine
         </Link>
       </div>
 
@@ -99,7 +106,7 @@ export default async function AdminPage() {
           {titles.map((t) => (
             <li key={t.id}>
               <Link
-                href={`/kilig/admin/titles/${t.id}`}
+                href={`/admin/titles/${t.id}`}
                 className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] transition-colors hover:border-[var(--accent-marigold)]"
               >
                 <span>{t.name}</span>

@@ -38,7 +38,7 @@ export function CollectionHeaderHero({
   return (
     <header className="mb-10 flex flex-col items-center gap-4 text-center">
       <Link
-        href={`/kilig/curator/${curatorDisplayName}`}
+        href={`/curator/${curatorDisplayName}`}
         className="mb-2 inline-flex items-center gap-1.5 self-start text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />

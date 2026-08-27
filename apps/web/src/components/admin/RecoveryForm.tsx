@@ -12,7 +12,7 @@ export function RecoveryForm() {
     return (
       <div className="flex flex-col gap-1 text-sm">
         <p className="text-[var(--accent-marigold)]">Recovered — password updated.</p>
-        <a href="/kilig/admin" className="underline underline-offset-4 text-[var(--text)]">
+        <a href="/admin" className="underline underline-offset-4 text-[var(--text)]">
           Go to admin
         </a>
       </div>

@@ -28,7 +28,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <HeroSection />
       </Suspense>
 
-      <MoodChipBar />
+      <header className="mb-10">
+        <h1 className="mb-7 max-w-xl break-words font-[var(--font-display)] text-[2.5rem] font-semibold uppercase leading-none text-[var(--text)] sm:text-4xl sm:leading-normal">
+          Drama for the in-between moments.
+        </h1>
+        <MoodChipBar />
+      </header>
 
       <Suspense fallback={null}>
         <CollectionsRail />

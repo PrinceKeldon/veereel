@@ -23,7 +23,7 @@ export default async function ReclaimPage({ searchParams }: ReclaimPageProps) {
   const curator = await prisma.curator.findUnique({ where: { id: curatorId }, select: { displayName: true } });
   // Already has a User (e.g. re-visited a stale link) — nothing to do here.
   if (status?.hasUser) {
-    redirect(next && next.startsWith("/") ? next : `/kilig/curator/${curator?.displayName ?? ""}`);
+    redirect(next && next.startsWith("/") ? next : `/curator/${curator?.displayName ?? ""}`);
   }
   const displayName = curator?.displayName ?? "";
 

@@ -36,7 +36,7 @@ interface TitleCardProps {
  */
 export function TitleCard({ title, matchScore, badge }: TitleCardProps) {
   return (
-    <Link href={`/kilig/title/${title.id}`} className="group block w-[164px] shrink-0 snap-start sm:w-[180px] lg:w-[200px]">
+    <Link href={`/title/${title.id}`} className="group block w-[164px] shrink-0 snap-start sm:w-[180px] lg:w-[200px]">
       <div className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-black transition-transform duration-200 group-hover:-translate-y-1">
         <TitleCoverArt title={title} showTitleOverlay={false} />
 

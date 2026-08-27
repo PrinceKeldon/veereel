@@ -3,7 +3,7 @@ import { isAdminSession } from "@/lib/admin";
 import { LoginForm } from "@/components/admin/LoginForm";
 
 export default async function AdminLoginPage() {
-  if (await isAdminSession()) redirect("/kilig/admin");
+  if (await isAdminSession()) redirect("/admin");
 
   return (
     <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6">

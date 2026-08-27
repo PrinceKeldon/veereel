@@ -60,7 +60,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   // is the moment that asks for a name. See ARCHITECTURE.md's
   // Collections section for the reasoning.
   const viewerCuratorId = await peekCuratorId();
-  if (!viewerCuratorId) redirect(`/claim?next=${encodeURIComponent(`/kilig/collection/${id}`)}`);
+  if (!viewerCuratorId) redirect(`/claim?next=${encodeURIComponent(`/collection/${id}`)}`);
 
   const collection = await getCollection(id);
   if (!collection) notFound();
@@ -115,7 +115,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     if (!item.title.isPublished) {
       return <div className={featured ? "opacity-60" : "shrink-0 opacity-60"}>{cover}</div>;
     }
-    return <Link href={`/kilig/title/${item.title.id}`}>{cover}</Link>;
+    return <Link href={`/title/${item.title.id}`}>{cover}</Link>;
   }
 
   function renderNote(item: (typeof visibleItems)[number], featured: boolean) {
@@ -158,7 +158,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           <p className="font-[var(--font-display)] text-base text-[var(--text)]">{item.title.name}</p>
         ) : (
           <Link
-            href={`/kilig/title/${item.title.id}`}
+            href={`/title/${item.title.id}`}
             className="font-[var(--font-display)] text-base text-[var(--text)] hover:text-[var(--accent-marigold)]"
           >
             {item.title.name}

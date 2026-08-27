@@ -59,7 +59,7 @@ export function CuratorHero({
       <div className="mt-6">
         {isOwnProfile ? (
           <Link
-            href="/kilig/collection/new"
+            href="/collection/new"
             className="rounded-xl bg-[var(--accent-marigold)] px-4 py-2 text-sm font-semibold text-[var(--bg)] transition-opacity hover:opacity-90"
           >
             New Collection

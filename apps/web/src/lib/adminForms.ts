@@ -129,17 +129,17 @@ export async function createTitleAction(
   }
 
   const title = await createTitle(fields);
-  redirect(`/kilig/admin/titles/${title.id}`);
+  redirect(`/admin/titles/${title.id}`);
 }
 
 export async function updateTitleFromForm(id: string, formData: FormData) {
   await updateTitle(id, parseTitleFields(formData));
-  redirect(`/kilig/admin/titles/${id}`);
+  redirect(`/admin/titles/${id}`);
 }
 
 export async function deleteTitleFromForm(id: string) {
   await deleteTitle(id);
-  redirect("/kilig/admin");
+  redirect("/admin");
 }
 
 export async function addAvailabilityFromForm(titleId: string, formData: FormData) {
@@ -156,7 +156,7 @@ export async function addAvailabilityFromForm(titleId: string, formData: FormDat
     regionAvailability: regions.length ? regions : undefined,
   });
 
-  redirect(`/kilig/admin/titles/${titleId}`);
+  redirect(`/admin/titles/${titleId}`);
 }
 
 export async function updateAvailabilityFromForm(id: string, titleId: string, formData: FormData) {
@@ -173,12 +173,12 @@ export async function updateAvailabilityFromForm(id: string, titleId: string, fo
     regionAvailability: regions.length ? regions : undefined,
   });
 
-  redirect(`/kilig/admin/titles/${titleId}`);
+  redirect(`/admin/titles/${titleId}`);
 }
 
 export async function deleteAvailabilityFromForm(id: string, titleId: string) {
   await deleteAvailability(id, titleId);
-  redirect(`/kilig/admin/titles/${titleId}`);
+  redirect(`/admin/titles/${titleId}`);
 }
 
 export async function addReactionFromForm(titleId: string, formData: FormData) {
@@ -191,10 +191,10 @@ export async function addReactionFromForm(titleId: string, formData: FormData) {
     displayOrder: displayOrderRaw ? Number(displayOrderRaw) : undefined,
   });
 
-  redirect(`/kilig/admin/titles/${titleId}`);
+  redirect(`/admin/titles/${titleId}`);
 }
 
 export async function deleteReactionFromForm(id: string, titleId: string) {
   await deleteReaction(id, titleId);
-  redirect(`/kilig/admin/titles/${titleId}`);
+  redirect(`/admin/titles/${titleId}`);
 }

@@ -9,7 +9,7 @@ import { setHeroRankFromForm, clearHeroRankFromForm, setHeroModeFromForm } from 
 const RANKS = [1, 2, 3, 4, 5] as const;
 
 export default async function AdminHeroPage() {
-  if (!(await isAdminSession())) redirect("/kilig/admin/login");
+  if (!(await isAdminSession())) redirect("/admin/login");
 
   const [mode, ranked, mostCollectedPreview, pickable] = await Promise.all([
     getHeroMode(),
@@ -34,7 +34,7 @@ export default async function AdminHeroPage() {
   return (
     <main className="mx-auto max-w-xl px-6 py-14 pb-20">
       <Link
-        href="/kilig/admin"
+        href="/admin"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />

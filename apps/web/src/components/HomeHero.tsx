@@ -130,13 +130,13 @@ export function HomeHero({ titles }: HomeHeroProps) {
 
       <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-start gap-4 sm:flex-row sm:items-center sm:justify-start sm:gap-10 sm:p-10">
         <div className="relative aspect-[4/5] w-[82vw] max-w-[330px] shrink-0 self-center sm:aspect-auto sm:h-full sm:w-auto sm:max-w-none sm:max-h-[400px]">
-          <Link href={`/kilig/title/${active.id}`} className="block h-full w-full" aria-label={`Open ${active.name}`}>
+          <Link href={`/title/${active.id}`} className="block h-full w-full" aria-label={`Open ${active.name}`}>
             <HeroPoster title={active} />
           </Link>
         </div>
 
         <div className="flex w-full flex-col gap-2 text-center sm:max-w-xl sm:flex-1 sm:min-w-0 sm:text-left">
-          <Link href={`/kilig/title/${active.id}`} className="block">
+          <Link href={`/title/${active.id}`} className="block">
             <h2 className="mx-auto max-w-[14ch] font-[var(--font-display)] text-[clamp(1.5rem,8vw,2rem)] font-semibold uppercase leading-[0.98] text-white transition-opacity hover:opacity-85 sm:mx-0 sm:max-w-2xl sm:text-3xl sm:leading-tight">
               {active.name}
             </h2>

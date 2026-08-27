@@ -16,7 +16,7 @@ export async function CollectionsRail() {
     <section className="mb-12">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="font-[var(--font-display)] text-lg uppercase tracking-wide text-[var(--text)]">Collections</h2>
-        <Link href="/kilig/curators" className="font-mono text-[11px] uppercase tracking-wide text-[var(--text-muted)] hover:text-[var(--accent-marigold)]">
+        <Link href="/curators" className="font-mono text-[11px] uppercase tracking-wide text-[var(--text-muted)] hover:text-[var(--accent-marigold)]">
           All curators
         </Link>
       </div>
@@ -26,7 +26,7 @@ export async function CollectionsRail() {
           return (
             <Link
               key={collection.id}
-              href={`/kilig/collection/${collection.id}`}
+              href={`/collection/${collection.id}`}
               className="w-44 shrink-0 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] transition-colors hover:border-[var(--accent-marigold)]"
             >
               <div className="aspect-[4/3] w-full overflow-hidden bg-black">

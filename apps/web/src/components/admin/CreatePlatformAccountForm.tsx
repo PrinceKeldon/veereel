@@ -44,7 +44,7 @@ export function CreatePlatformAccountForm() {
             </p>
           )}
           <Link
-            href="/kilig/admin"
+            href="/admin"
             className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--text)] transition-colors hover:border-[var(--accent-marigold)]"
           >
             Back to admin

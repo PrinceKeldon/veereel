@@ -39,7 +39,7 @@ export default async function BrowseAllPage({ searchParams }: BrowseAllPageProps
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 pb-16">
       <Link
-        href="/kilig"
+        href="/"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />

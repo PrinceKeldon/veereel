@@ -21,7 +21,7 @@ interface AdminTitleDetailProps {
 }
 
 export default async function AdminTitleDetailPage({ params }: AdminTitleDetailProps) {
-  if (!(await isAdminSession())) redirect("/kilig/admin/login");
+  if (!(await isAdminSession())) redirect("/admin/login");
 
   const { id } = await params;
   const title = await prisma.title.findUnique({
@@ -49,7 +49,7 @@ export default async function AdminTitleDetailPage({ params }: AdminTitleDetailP
   return (
     <main className="mx-auto max-w-xl px-6 py-14 pb-20">
       <Link
-        href="/kilig/admin"
+        href="/admin"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />
@@ -65,16 +65,16 @@ export default async function AdminTitleDetailPage({ params }: AdminTitleDetailP
       {seasonOf && (
         <p className="mb-2 font-mono text-xs uppercase tracking-wide text-[var(--text-muted)]">
           Season {title.seasonNumber ?? "?"} of{" "}
-          <Link href={`/kilig/admin/titles/${title.seasonOfId}`} className="text-[var(--accent-marigold)] hover:underline">
+          <Link href={`/admin/titles/${title.seasonOfId}`} className="text-[var(--accent-marigold)] hover:underline">
             {seasonOf.name}
           </Link>
         </p>
       )}
       <div className="mb-7 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-        <Link href={`/kilig/title/${title.id}`} className="text-[var(--accent-marigold)] hover:underline">
+        <Link href={`/title/${title.id}`} className="text-[var(--accent-marigold)] hover:underline">
           View public page →
         </Link>
-        <Link href={`/kilig/admin/titles/${title.id}/edit`} className="text-[var(--text)] hover:underline">
+        <Link href={`/admin/titles/${title.id}/edit`} className="text-[var(--text)] hover:underline">
           Edit title
         </Link>
         <details className="inline-block">

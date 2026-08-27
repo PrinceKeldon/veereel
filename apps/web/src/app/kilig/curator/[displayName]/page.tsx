@@ -62,7 +62,7 @@ export default async function CuratorPage({ params }: CuratorPageProps) {
   // is the moment that asks for a name. See ARCHITECTURE.md's
   // Collections section.
   const viewerCuratorId = await peekCuratorId();
-  if (!viewerCuratorId) redirect(`/claim?next=${encodeURIComponent(`/kilig/curator/${displayName}`)}`);
+  if (!viewerCuratorId) redirect(`/claim?next=${encodeURIComponent(`/curator/${displayName}`)}`);
 
   const curator = await getCuratorByName(displayName);
   if (!curator) notFound();
@@ -131,7 +131,7 @@ export default async function CuratorPage({ params }: CuratorPageProps) {
           name={featuredCollection.name}
           description={featuredCollection.description}
           itemCount={featuredCollection._count.items}
-          href={`/kilig/collection/${featuredCollection.id}`}
+          href={`/collection/${featuredCollection.id}`}
         />
       </section>
 
@@ -148,7 +148,7 @@ export default async function CuratorPage({ params }: CuratorPageProps) {
                   name={collection.name}
                   description={collection.description}
                   itemCount={collection._count.items}
-                  href={`/kilig/collection/${collection.id}`}
+                  href={`/collection/${collection.id}`}
                 />
               </li>
             ))}

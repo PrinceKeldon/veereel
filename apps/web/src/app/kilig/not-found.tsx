@@ -11,7 +11,7 @@ export default function NotFound() {
         This page doesn&apos;t exist — or the title you&apos;re looking for isn&apos;t published yet.
       </p>
       <Link
-        href="/kilig"
+        href="/"
         className="rounded-xl bg-[var(--accent-marigold)] px-5 py-2.5 text-sm font-semibold text-[var(--bg)] transition-opacity hover:opacity-90"
       >
         Back to Kilig

@@ -25,14 +25,14 @@ export function SiteNav() {
     <nav className="mb-5 flex items-center justify-between rounded-xl border border-[var(--accent-marigold)]/45 bg-[var(--surface)] px-4 py-2.5 sm:mb-8 sm:flex-wrap sm:gap-x-6 sm:gap-y-3 sm:rounded-2xl sm:border-[var(--accent-marigold)] sm:px-5 sm:py-3">
       <div className="flex items-center gap-2 sm:gap-4">
         <Link
-          href="/kilig"
+          href="/"
           className="shrink-0 font-mono text-[13px] uppercase tracking-wide text-[var(--accent-marigold)] sm:text-xs"
         >
           Kilig
         </Link>
 
-        <div className="hidden items-center gap-4 sm:ml-auto sm:flex">
-          <NavLink href="/kilig/titles">Browse all</NavLink>
+        <div className="hidden items-center gap-4 sm:flex">
+          <NavLink href="/titles">Browse all</NavLink>
           <SearchBar compact className="w-36 lg:w-44" />
         </div>
 
@@ -48,8 +48,8 @@ export function SiteNav() {
               <SearchBar compact className="w-full" />
             </div>
             <NavLink href="/buzz">Buzz</NavLink>
-            <NavLink href="/kilig/curators">Curators</NavLink>
-            <NavLink href="/kilig/titles">Browse all</NavLink>
+            <NavLink href="/curators">Curators</NavLink>
+            <NavLink href="/titles">Browse all</NavLink>
             <Suspense fallback={null}>
               <IdentityNavLink />
             </Suspense>
@@ -58,7 +58,7 @@ export function SiteNav() {
       </div>
       <div className="hidden flex-wrap items-center gap-x-6 gap-y-2 sm:flex">
         <NavLink href="/buzz">Buzz</NavLink>
-        <NavLink href="/kilig/curators">Curators</NavLink>
+        <NavLink href="/curators">Curators</NavLink>
         <Suspense fallback={null}>
           <IdentityNavLink />
         </Suspense>

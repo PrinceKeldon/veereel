@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { NewTitleForm } from "@/components/admin/NewTitleForm";
 
 export default async function NewTitlePage() {
-  if (!(await isAdminSession())) redirect("/kilig/admin/login");
+  if (!(await isAdminSession())) redirect("/admin/login");
 
   // For the season picker — name + id only, every existing title.
   // Fine at this catalogue's scale as a plain <select>; revisit with
@@ -31,7 +31,7 @@ export default async function NewTitlePage() {
   return (
     <main className="mx-auto max-w-xl px-6 py-14 pb-20">
       <Link
-        href="/kilig/admin"
+        href="/admin"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
       >
         <ArrowLeft size={14} aria-hidden="true" />
