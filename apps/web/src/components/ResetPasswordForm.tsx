@@ -48,7 +48,7 @@ export function ResetPasswordForm() {
       >
         {isPending ? "Saving…" : "Set new password"}
       </button>
-      <Link href="/signin" className="text-sm text-[var(--text-muted)] underline underline-offset-4">
+      <Link href="/kilig/signin" className="text-sm text-[var(--text-muted)] underline underline-offset-4">
         Back to sign in
       </Link>
     </form>

@@ -8,7 +8,7 @@ export const metadata = { title: "New Collection" };
 
 export default async function NewCollectionPage() {
   const curator = await getCurrentCurator();
-  if (!curator) redirect("/claim");
+  if (!curator) redirect("/kilig/claim");
 
   return (
     <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6">

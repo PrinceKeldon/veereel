@@ -121,7 +121,7 @@ export async function resetPasswordWithToken(
     return { error: "Something went wrong — try again." };
   }
 
-  redirect("/signin");
+  redirect("/kilig/signin");
 }
 
 /** Whether a raw reset token is currently live — for the reset page to pre-validate before showing the form. */

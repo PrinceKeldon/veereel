@@ -17,7 +17,7 @@ export default async function ReclaimPage({ searchParams }: ReclaimPageProps) {
   // Nothing claimed in this browser at all — /reclaim only ever makes
   // sense for a browser that already has a Curator, so send it
   // through /claim first (same next round-trip).
-  if (!curatorId) redirect(`/claim${next ? `?next=${encodeURIComponent(next)}` : ""}`);
+  if (!curatorId) redirect(`/kilig/claim${next ? `?next=${encodeURIComponent(next)}` : ""}`);
 
   const status = await peekCuratorAuthStatus();
   const curator = await prisma.curator.findUnique({ where: { id: curatorId }, select: { displayName: true } });

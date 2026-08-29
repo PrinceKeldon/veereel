@@ -46,7 +46,7 @@ export function ReclaimForm() {
       {state.error && <p className="text-sm text-[var(--accent-rose)]">{state.error}</p>}
       {state.suggestSignIn ? (
         <a
-          href={`/signin${next ? `?next=${encodeURIComponent(next)}` : ""}`}
+          href={`/kilig/signin${next ? `?next=${encodeURIComponent(next)}` : ""}`}
           className="rounded-xl bg-[var(--accent-marigold)] px-4 py-2.5 text-center text-sm font-semibold text-[var(--bg)] transition-opacity hover:opacity-90"
         >
           Sign in instead

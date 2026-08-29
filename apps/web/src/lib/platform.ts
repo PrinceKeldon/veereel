@@ -63,16 +63,21 @@ export async function clearPlatformCookie(): Promise<void> {
  * guard just confirms identity.
  */
 export async function requirePlatform(
-  nextPath: string
+  nextPath?: string
 ): Promise<{ id: string; name: string; slug: string }> {
   const platformId = await peekPlatformId();
-  if (!platformId) redirect(`/signin?next=${encodeURIComponent(nextPath)}`);
+  if (!platformId) {
+    // No nextPath: sign in without one so signInWithEmail()'s fallback
+    // (the platform's own /kilig/platform/[slug] page) routes them
+    // back home after signing in.
+    redirect(nextPath ? `/kilig/signin?next=${encodeURIComponent(nextPath)}` : "/kilig/signin");
+  }
 
   const platform = await prisma.platform.findUnique({
     where: { id: platformId },
     select: { id: true, name: true, slug: true },
   });
-  if (!platform) redirect(`/signin?next=${encodeURIComponent(nextPath)}`);
+  if (!platform) redirect(`/kilig/signin`);
 
   return platform;
 }
