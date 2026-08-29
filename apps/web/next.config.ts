@@ -1,9 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  experimental: {
-    turbopack: false, // Disable Turbopack, use SWC instead
-  },
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
