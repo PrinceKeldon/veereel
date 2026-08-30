@@ -40,7 +40,7 @@ export function PublishedTrendPosts({ initialPosts }: { initialPosts: TrendPostV
           Currently on /buzz
         </h2>
         <Link
-          href="/kilig/buzz"
+          href="/buzz"
           target="_blank"
           className="font-mono text-[11px] uppercase tracking-wide text-[var(--text-muted)] hover:text-[var(--accent-marigold)]"
         >

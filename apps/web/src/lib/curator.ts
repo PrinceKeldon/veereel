@@ -112,7 +112,7 @@ export async function peekCuratorAuthStatus(): Promise<
  */
 export async function requireReclaimedCurator(nextPath: string): Promise<string> {
   const status = await peekCuratorAuthStatus();
-  if (!status) redirect(`/kilig/claim?next=${encodeURIComponent(nextPath)}`);
-  if (!status.hasUser) redirect(`/kilig/reclaim?next=${encodeURIComponent(nextPath)}`);
+  if (!status) redirect(`/claim?next=${encodeURIComponent(nextPath)}`);
+  if (!status.hasUser) redirect(`/reclaim?next=${encodeURIComponent(nextPath)}`);
   return status.curatorId;
 }

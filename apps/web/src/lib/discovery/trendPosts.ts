@@ -89,7 +89,7 @@ export async function publishTrendPost(input: PublishTrendPostInput): Promise<vo
   });
 
   await trimToCap();
-  revalidatePath("/kilig/buzz");
+  revalidatePath("/buzz");
 }
 
 /** Deletes anything beyond the newest TREND_POST_CAP rows, newest-first. */
@@ -107,7 +107,7 @@ async function trimToCap(): Promise<void> {
 export async function removeTrendPost(id: string): Promise<void> {
   await requireAdmin();
   await prisma.trendPost.delete({ where: { id } });
-  revalidatePath("/kilig/buzz");
+  revalidatePath("/buzz");
 }
 
 /**

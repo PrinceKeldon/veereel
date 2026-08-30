@@ -22,7 +22,7 @@ export function SearchBar({
 }) {
   if (compact) {
     return (
-      <form action="/kilig/search" method="GET" className={className}>
+      <form action="/search" method="GET" className={className}>
         <div className="flex w-full items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg)] py-1.5 pl-3 pr-1.5 focus-within:border-[var(--accent-marigold)]">
           <input
             type="text"
@@ -44,7 +44,7 @@ export function SearchBar({
   }
 
   return (
-    <form action="/kilig/search" method="GET" className={`${className} flex max-w-md items-center gap-2`}>
+    <form action="/search" method="GET" className={`${className} flex max-w-md items-center gap-2`}>
       <div className="flex flex-1 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 focus-within:border-[var(--accent-marigold)]">
         <Search size={16} className="text-[var(--text-muted)]" aria-hidden="true" />
         <input

@@ -10,7 +10,7 @@ export default async function SettingsPage() {
   // A curator without a User yet has nothing to delete in the sense
   // this page means (no email/password exists) — send them through
   // /reclaim first, same as any other identity-gated action.
-  const curatorId = await requireReclaimedCurator("/kilig/settings");
+  const curatorId = await requireReclaimedCurator("/settings");
   const curator = await prisma.curator.findUniqueOrThrow({
     where: { id: curatorId },
     select: {

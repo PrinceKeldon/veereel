@@ -146,7 +146,7 @@ export async function claimDisplayName(
   // /reclaim can keep forwarding it — resolving it here would mean
   // reclaimCurator() couldn't tell "no next was given" apart from
   // "next was already resolved to this specific path."
-  redirect(`/kilig/reclaim?next=${encodeURIComponent(safeNextPath(str(formData, "next"), `/kilig/curator/${displayName}`))}`);
+  redirect(`/reclaim?next=${encodeURIComponent(safeNextPath(str(formData, "next"), `/curator/${displayName}`))}`);
 }
 
 /**
@@ -206,7 +206,7 @@ export async function reclaimCurator(
     select: { userId: true, displayName: true },
   });
   if (!curator) return { error: "That curator no longer exists." };
-  const nextTarget = safeNextPath(str(formData, "next"), `/kilig/curator/${curator.displayName}`);
+  const nextTarget = safeNextPath(str(formData, "next"), `/curator/${curator.displayName}`);
   if (curator.userId) {
     // Already reclaimed (e.g. a stale form re-submitted) — nothing to do.
     redirect(nextTarget);
@@ -283,7 +283,7 @@ export async function signInWithEmail(
 
   if (user.curator) {
     await setCuratorCookie(user.curator.id);
-    redirect(safeNextPath(str(formData, "next"), `/kilig/curator/${user.curator.displayName}`));
+    redirect(safeNextPath(str(formData, "next"), `/curator/${user.curator.displayName}`));
   }
 
   if (user.platform) {
@@ -293,7 +293,7 @@ export async function signInWithEmail(
     // browser can hold both identities without them overwriting each
     // other. See lib/platform.ts.
     await setPlatformCookie(user.platform.id);
-    redirect(safeNextPath(str(formData, "next"), `/kilig/platform/${user.platform.slug}`));
+    redirect(safeNextPath(str(formData, "next"), `/platform/${user.platform.slug}`));
   }
 
   return { error: "This account has no curator or platform identity." };
@@ -327,7 +327,7 @@ export async function deleteAccount(
   _prevState: DeleteAccountState,
   formData: FormData
 ): Promise<DeleteAccountState> {
-  const curatorId = await requireReclaimedCurator("/kilig/settings");
+  const curatorId = await requireReclaimedCurator("/settings");
 
   const curator = await prisma.curator.findUnique({
     where: { id: curatorId },
@@ -359,7 +359,7 @@ export async function createCollection(
   _prevState: CreateCollectionState,
   formData: FormData
 ): Promise<CreateCollectionState> {
-  const curatorId = await requireReclaimedCurator("/kilig/collection/new");
+  const curatorId = await requireReclaimedCurator("/curators/new-collection");
 
   const name = str(formData, "name");
   if (!name) return { error: "Give the Collection a name." };
@@ -372,7 +372,7 @@ export async function createCollection(
     data: { curatorId, name, description: description || null },
   });
 
-  redirect(`/kilig/collection/${collection.id}`);
+  redirect(`/collection/${collection.id}`);
 }
 
 /**
@@ -395,7 +395,7 @@ export async function addToCollection(
 ): Promise<AddToCollectionState> {
   const collectionId = str(formData, "collectionId");
   const curatorId = await requireReclaimedCurator(
-    collectionId ? `/kilig/collection/${collectionId}` : "/"
+    collectionId ? `/collection/${collectionId}` : "/"
   );
   const titleId = str(formData, "titleId");
   const note = str(formData, "note").slice(0, NOTE_MAX_LENGTH);
@@ -423,8 +423,8 @@ export async function addToCollection(
   // "the shelf they last worked on" honest.
   await prisma.collection.update({ where: { id: collectionId }, data: { updatedAt: new Date() } });
 
-  revalidatePath(`/kilig/collection/${collectionId}`);
-  revalidatePath(`/kilig/title/${titleId}`);
+  revalidatePath(`/collection/${collectionId}`);
+  revalidatePath(`/title/${titleId}`);
   return { ok: true };
 }
 
@@ -439,8 +439,8 @@ export async function removeFromCollection(collectionId: string, titleId: string
   if (!collection || collection.curatorId !== curatorId) return;
 
   await prisma.collectionItem.deleteMany({ where: { collectionId, titleId } });
-  revalidatePath(`/kilig/collection/${collectionId}`);
-  revalidatePath(`/kilig/title/${titleId}`);
+  revalidatePath(`/collection/${collectionId}`);
+  revalidatePath(`/title/${titleId}`);
 }
 
 /** The current curator's own Collections — used to populate the "Save to Collection" picker. */
@@ -489,7 +489,7 @@ export async function submitTitleFromLink(
 ): Promise<SubmitTitleState> {
   const collectionId = str(formData, "collectionId");
   const curatorId = await requireReclaimedCurator(
-    collectionId ? `/kilig/collection/${collectionId}` : "/"
+    collectionId ? `/collection/${collectionId}` : "/"
   );
 
   const collection = await prisma.collection.findUnique({
@@ -562,8 +562,8 @@ export async function submitTitleFromLink(
   // profile's featured-collection fallback.
   await prisma.collection.update({ where: { id: collectionId }, data: { updatedAt: new Date() } });
 
-  revalidatePath(`/kilig/collection/${collectionId}`);
-  redirect(`/kilig/collection/${collectionId}`);
+  revalidatePath(`/collection/${collectionId}`);
+  redirect(`/collection/${collectionId}`);
 }
 
 // ---------------------------------------------------------------------
@@ -597,7 +597,7 @@ export async function setFeaturedCollection(
   _prevState: CuratorSettingsState,
   formData: FormData
 ): Promise<CuratorSettingsState> {
-  const curatorId = await requireReclaimedCurator("/kilig/settings");
+  const curatorId = await requireReclaimedCurator("/settings");
   const collectionId = str(formData, "collectionId");
 
   if (collectionId) {
@@ -618,9 +618,9 @@ export async function setFeaturedCollection(
     where: { id: curatorId },
     data: { featuredCollectionId: collectionId || null },
   });
-  revalidatePath("/kilig/settings");
-  revalidatePath(`/kilig/curator/${curator.displayName}`);
-  revalidatePath("/kilig/curators");
+  revalidatePath("/settings");
+  revalidatePath(`/curator/${curator.displayName}`);
+  revalidatePath("/curators");
   return { ok: true };
 }
 
@@ -635,7 +635,7 @@ export async function updateCuratorAvatar(
   _prevState: CuratorSettingsState,
   formData: FormData
 ): Promise<CuratorSettingsState> {
-  const curatorId = await requireReclaimedCurator("/kilig/settings");
+  const curatorId = await requireReclaimedCurator("/settings");
   const avatar = str(formData, "avatar");
 
   if (!avatar) return { error: "Choose an image first." };
@@ -650,15 +650,15 @@ export async function updateCuratorAvatar(
     where: { id: curatorId },
     data: { avatarUrl: avatar },
   });
-  revalidatePath("/kilig/settings");
-  revalidatePath(`/kilig/curator/${curator.displayName}`);
-  revalidatePath("/kilig/curators");
+  revalidatePath("/settings");
+  revalidatePath(`/curator/${curator.displayName}`);
+  revalidatePath("/curators");
   return { ok: true };
 }
 
 /** Clears the avatar back to the initials fallback (see CuratorAvatar). */
 export async function removeCuratorAvatar(): Promise<void> {
-  const curatorId = await requireReclaimedCurator("/kilig/settings");
+  const curatorId = await requireReclaimedCurator("/settings");
   const curator = await prisma.curator.findUniqueOrThrow({
     where: { id: curatorId },
     select: { displayName: true },
@@ -667,9 +667,9 @@ export async function removeCuratorAvatar(): Promise<void> {
     where: { id: curatorId },
     data: { avatarUrl: null },
   });
-  revalidatePath("/kilig/settings");
-  revalidatePath(`/kilig/curator/${curator.displayName}`);
-  revalidatePath("/kilig/curators");
+  revalidatePath("/settings");
+  revalidatePath(`/curator/${curator.displayName}`);
+  revalidatePath("/curators");
 }
 
 // ---------------------------------------------------------------------
@@ -701,7 +701,7 @@ export async function followCurator(
     await prisma.follow.create({
       data: { followerId: curatorId, followingId: targetCuratorId },
     });
-    revalidatePath(`/kilig/curators`);
+    revalidatePath(`/curator`);
     return { ok: true };
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
@@ -719,7 +719,7 @@ export async function unfollowCurator(targetCuratorId: string): Promise<void> {
   await prisma.follow.deleteMany({
     where: { followerId: curatorId, followingId: targetCuratorId },
   });
-  revalidatePath(`/kilig/curators`);
+  revalidatePath(`/curator`);
 }
 
 /**
@@ -772,9 +772,9 @@ export async function getFollowerDisplay(
 // play count or a post's like count on any other platform), not an
 // identity signal, so it doesn't have the same cost at zero.
 
-export async function likeCollection(collectionId: string): Promise<{ ok: boolean; needsReclaim: boolean }> {
+export async function likeCollection(collectionId: string): Promise<{ needsReclaim: boolean }> {
   const guard = await softRequireReclaimedCurator();
-  if (guard.curatorId === null) return { ok: false, needsReclaim: guard.needsReclaim };
+  if (guard.curatorId === null) return { needsReclaim: guard.needsReclaim };
   const curatorId = guard.curatorId;
 
   try {
@@ -786,8 +786,8 @@ export async function likeCollection(collectionId: string): Promise<{ ok: boolea
       console.error("Failed to like collection", err);
     }
   }
-  revalidatePath(`/kilig/collection/${collectionId}`);
-  return { ok: true, needsReclaim: false };
+  revalidatePath(`/collection/${collectionId}`);
+  return { needsReclaim: false };
 }
 
 export async function unlikeCollection(collectionId: string): Promise<void> {
@@ -795,15 +795,15 @@ export async function unlikeCollection(collectionId: string): Promise<void> {
   if (!curatorId) return;
 
   await prisma.collectionLike.deleteMany({ where: { curatorId, collectionId } });
-  revalidatePath(`/kilig/collection/${collectionId}`);
+  revalidatePath(`/collection/${collectionId}`);
 }
 
 export async function likeCollectionItem(
   collectionItemId: string,
   collectionId: string
-): Promise<{ ok: boolean; needsReclaim: boolean }> {
+): Promise<{ needsReclaim: boolean }> {
   const guard = await softRequireReclaimedCurator();
-  if (guard.curatorId === null) return { ok: false, needsReclaim: guard.needsReclaim };
+  if (guard.curatorId === null) return { needsReclaim: guard.needsReclaim };
   const curatorId = guard.curatorId;
 
   try {
@@ -813,8 +813,8 @@ export async function likeCollectionItem(
       console.error("Failed to like collection item", err);
     }
   }
-  revalidatePath(`/kilig/collection/${collectionId}`);
-  return { ok: true, needsReclaim: false };
+  revalidatePath(`/collection/${collectionId}`);
+  return { needsReclaim: false };
 }
 
 export async function unlikeCollectionItem(collectionItemId: string, collectionId: string): Promise<void> {
@@ -822,7 +822,7 @@ export async function unlikeCollectionItem(collectionItemId: string, collectionI
   if (!curatorId) return;
 
   await prisma.collectionItemLike.deleteMany({ where: { curatorId, collectionItemId } });
-  revalidatePath(`/kilig/collection/${collectionId}`);
+  revalidatePath(`/collection/${collectionId}`);
 }
 
 /** Server-side render state for a Collection's like button — real count plus whether the viewer (if any) already liked it. */

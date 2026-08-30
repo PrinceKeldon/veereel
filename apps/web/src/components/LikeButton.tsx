@@ -47,16 +47,13 @@ export function LikeButton({ kind, id, collectionId, initialLiked, initialCount,
         ? likeCollection(id)
         : likeCollectionItem(id, collectionId ?? ""));
 
-      if (!result.ok) {
-        // Revert the optimistic tap — liking needs an identity (see
-        // requireReclaimedCurator's docstring in curator.ts). needsReclaim
-        // means a claimed curator without a User yet (attach an email);
-        // otherwise it's a fully anonymous visitor, so route them through
-        // /claim to add a name. Either way next round-trips them back.
+      if (result.needsReclaim) {
+        // Revert the optimistic tap — a curator with no User yet
+        // can't like (see requireReclaimedCurator's docstring in
+        // curator.ts) — then send them to attach an email first.
         setLiked(false);
         setCount((c) => c - 1);
-        if (result.needsReclaim) router.push(`/kilig/reclaim?next=${encodeURIComponent(pathname)}`);
-        else router.push(`/kilig/claim?next=${encodeURIComponent(pathname)}`);
+        router.push(`/reclaim?next=${encodeURIComponent(pathname)}`);
       }
     });
   }

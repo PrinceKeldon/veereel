@@ -18,7 +18,7 @@ export async function IdentityNavLink() {
         <Link href={`/curator/${curator.displayName}`} className={linkClass}>
           {curator.displayName}&rsquo;s Collections
         </Link>
-        <Link href="/kilig/settings" className={linkClass}>
+        <Link href="/settings" className={linkClass}>
           Settings
         </Link>
       </span>
@@ -26,7 +26,7 @@ export async function IdentityNavLink() {
   }
 
   return (
-    <Link href="/kilig/claim" className={linkClass}>
+    <Link href="/claim" className={linkClass}>
       Claim a name → start curating
     </Link>
   );

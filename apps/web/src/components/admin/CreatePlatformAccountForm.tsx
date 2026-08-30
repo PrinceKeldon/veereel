@@ -28,7 +28,7 @@ export function CreatePlatformAccountForm() {
           </p>
           <p className="mb-4 text-sm text-[var(--text)]">
             <span className="font-semibold">{state.platformName}</span> can now sign in at
-            <a className="mx-1 text-[var(--accent-marigold)] underline" href="/kilig/signin">
+            <a className="mx-1 text-[var(--accent-marigold)] underline" href="/signin">
               /signin
             </a>
             with the email on this account. Share a one-time temp password below with them directly — it will

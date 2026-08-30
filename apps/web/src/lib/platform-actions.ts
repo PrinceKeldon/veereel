@@ -52,7 +52,7 @@ export async function submitTitleFromPlatform(
   // requirePlatform() redirects (not throws) when there's no platform
   // session — same "normal, expected mid-flow state" contract as the
   // curator guard. It also returns the platform's name/slug for us.
-  const platform = await requirePlatform();
+  const platform = await requirePlatform("/platform");
 
   const name = str(formData, "name");
   if (!name) {
@@ -109,9 +109,9 @@ export async function submitTitleFromPlatform(
     },
   });
 
-  revalidatePath(`/kilig/platform/${platform.slug}`);
+  revalidatePath(`/platform/${platform.slug}`);
   revalidatePath("/");
-  redirect(`/kilig/platform/${platform.slug}`);
+  redirect(`/platform/${platform.slug}`);
 }
 
 // ---------------------------------------------------------------------
@@ -141,7 +141,7 @@ export async function updatePlatformLogo(
   _prevState: PlatformSettingsState,
   formData: FormData
 ): Promise<PlatformSettingsState> {
-  const platform = await requirePlatform();
+  const platform = await requirePlatform("/platform");
   const logo = str(formData, "logo");
 
   if (!logo) return { error: "Choose an image first." };
@@ -152,7 +152,7 @@ export async function updatePlatformLogo(
     where: { id: platform.id },
     data: { logoUrl: logo },
   });
-  revalidatePath(`/kilig/platform/${platform.slug}`);
+  revalidatePath(`/platform/${platform.slug}`);
   return { ok: true };
 }
 
@@ -178,7 +178,7 @@ export async function createPlatformAnnouncement(
   _prevState: AnnouncementState,
   formData: FormData
 ): Promise<AnnouncementState> {
-  const platform = await requirePlatform();
+  const platform = await requirePlatform("/platform");
 
   const headline = str(formData, "headline");
   const body = str(formData, "body");
@@ -211,13 +211,13 @@ export async function createPlatformAnnouncement(
       titleId: titleId || null,
     },
   });
-  revalidatePath(`/kilig/platform/${platform.slug}`);
+  revalidatePath(`/platform/${platform.slug}`);
   return { ok: true };
 }
 
 /** The platform's own titles, for the announcement form's title picker. */
 export async function getMyPlatformTitles(): Promise<{ id: string; name: string }[]> {
-  const platform = await requirePlatform();
+  const platform = await requirePlatform("/platform");
   return prisma.title.findMany({
     where: { submittedByPlatformId: platform.id },
     orderBy: { createdAt: "desc" },
@@ -233,7 +233,7 @@ export async function getMyPlatformTitles(): Promise<{ id: string; name: string 
 export async function getMyPlatformAnnouncements(): Promise<
   { id: string; headline: string; createdAt: Date }[]
 > {
-  const platform = await requirePlatform();
+  const platform = await requirePlatform("/platform");
   return prisma.platformAnnouncement.findMany({
     where: { platformId: platform.id },
     orderBy: { createdAt: "desc" },
@@ -242,9 +242,9 @@ export async function getMyPlatformAnnouncements(): Promise<
 }
 
 export async function deletePlatformAnnouncement(announcementId: string): Promise<void> {
-  const platform = await requirePlatform();
+  const platform = await requirePlatform("/platform");
   await prisma.platformAnnouncement.deleteMany({
     where: { id: announcementId, platformId: platform.id },
   });
-  revalidatePath(`/kilig/platform/${platform.slug}`);
+  revalidatePath(`/platform/${platform.slug}`);
 }

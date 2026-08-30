@@ -27,12 +27,10 @@ export function FollowButton({ curatorId, initialIsFollowing }: FollowButtonProp
         const result = await followCurator(curatorId);
         if (!result.ok && !result.alreadyFollowing) {
           setFollowing(false);
-          // needsReclaim: a claimed curator without a User yet — attach
-          // an email first. Fully anonymous visitor: claim a name first
-          // (/claim is the "add an identity" step). Either way they land
-          // right back here via the next round-trip.
-          if (result.needsReclaim) router.push(`/kilig/reclaim?next=${encodeURIComponent(pathname)}`);
-          else router.push(`/kilig/claim?next=${encodeURIComponent(pathname)}`);
+          // A curator with no User yet (see requireReclaimedCurator's
+          // docstring in curator.ts) can't follow — send them to
+          // attach an email first, then back to where they were.
+          if (result.needsReclaim) router.push(`/reclaim?next=${encodeURIComponent(pathname)}`);
         }
       } else {
         await unfollowCurator(curatorId);

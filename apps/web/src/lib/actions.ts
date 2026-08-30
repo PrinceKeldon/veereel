@@ -155,7 +155,7 @@ export async function logHookVoteFromForm(titleId: string, formData: FormData): 
     await prisma.userInteraction.create({
       data: { sessionId, titleId, action: "hook_vote", metadata: { hookedAtEpisode } },
     });
-    revalidatePath(`/kilig/title/${titleId}`);
+    revalidatePath(`/title/${titleId}`);
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
       return; // already voted this session — not an error, just a no-op
@@ -352,7 +352,7 @@ export async function updateTitle(id: string, data: TitleFields) {
     data: { ...data, tropeTags, moodTags, castType },
   });
   revalidatePath("/");
-  revalidatePath(`/kilig/title/${id}`);
+  revalidatePath(`/title/${id}`);
   return title;
 }
 
@@ -380,7 +380,7 @@ export async function addAvailability(
   const availability = await prisma.availability.create({
     data: { titleId, ...data },
   });
-  revalidatePath(`/kilig/title/${titleId}`);
+  revalidatePath(`/title/${titleId}`);
   return availability;
 }
 
@@ -400,14 +400,14 @@ export async function updateAvailability(
     where: { id },
     data,
   });
-  revalidatePath(`/kilig/title/${titleId}`);
+  revalidatePath(`/title/${titleId}`);
   return availability;
 }
 
 export async function deleteAvailability(id: string, titleId: string) {
   await requireAdmin();
   await prisma.availability.delete({ where: { id } });
-  revalidatePath(`/kilig/title/${titleId}`);
+  revalidatePath(`/title/${titleId}`);
 }
 
 export async function addReaction(
@@ -418,12 +418,12 @@ export async function addReaction(
   const reaction = await prisma.titleReaction.create({
     data: { titleId, ...data },
   });
-  revalidatePath(`/kilig/title/${titleId}`);
+  revalidatePath(`/title/${titleId}`);
   return reaction;
 }
 
 export async function deleteReaction(id: string, titleId: string) {
   await requireAdmin();
   await prisma.titleReaction.delete({ where: { id } });
-  revalidatePath(`/kilig/title/${titleId}`);
+  revalidatePath(`/title/${titleId}`);
 }
