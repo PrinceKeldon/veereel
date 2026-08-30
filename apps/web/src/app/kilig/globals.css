@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Kilig design tokens. Fixed dark cinematic palette by design — this is
    a brand decision (see ARCHITECTURE.md), not a light/dark-mode default,
@@ -12,41 +14,7 @@
   --text: #F1EEE6;
   --text-muted: #8B8D98;
   --border: #2E3040;
-
   --font-display: var(--font-oswald);
   --font-body: var(--font-inter);
   --font-mono-brand: var(--font-jetbrains-mono);
-}
-
-@theme inline {
-  --color-background: var(--bg);
-  --color-foreground: var(--text);
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body), sans-serif;
-}
-
-/* IntroSplash safety net: the splash is intentionally server-rendered
-   visible (no flash of the homepage), but it must never trap the page.
-   If client JS is slow, blocked, or hydration fails on a mobile
-   browser, this animation still fades the overlay away after the same
-   duration the JS would have used — 2.5s, fading the last 600ms.
-   When JS *is* running it removes the element from the DOM first, so
-   the animation only ever matters for the no-JS/hydration-failure
-   path. */
-@keyframes kilig-intro-dismiss {
-  0% {
-    opacity: 1;
-  }
-  76% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
 }
