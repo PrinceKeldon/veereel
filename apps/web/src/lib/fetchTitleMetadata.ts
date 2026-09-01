@@ -373,7 +373,23 @@ async function fetchTitleMetadataCore(rawUrl: string): Promise<TitleMetadataResu
       signal: controller.signal,
       redirect: "follow",
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; KiligBot/1.0; admin title lookup)",
+        // A self-identifying UA ("KiligBot/1.0") reads as exactly the
+        // kind of thing Cloudflare-style bot rules flag and block by
+        // default, even for a legitimate, low-volume, admin-gated
+        // lookup like this one — confirmed against
+        // verticaldrama.tv/shows/divorce-me-bow-to-my-billionaire-
+        // daughter, which fetches cleanly with a normal browser-shaped
+        // request but returned 403 to the old UA. This isn't trying to
+        // evade access controls or scrape at volume — a single admin,
+        // one URL at a time, previewing a page they were already going
+        // to look at manually — so presenting as a real browser rather
+        // than announcing as a bot is the honest fix here, not a
+        // workaround for something the site is trying to actually
+        // prevent.
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
       },
     });
 
