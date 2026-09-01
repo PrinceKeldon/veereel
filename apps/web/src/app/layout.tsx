@@ -1,36 +1,44 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Oswald, Inter, JetBrains_Mono } from "next/font/google";
+import { Oswald, Inter, JetBrains_Mono } from "next/font/google";
+import { IntroSplash } from "@/components/IntroSplash";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+// Display: condensed bold sans, film-poster register — reserved for
+// titles and hero statements only (see ARCHITECTURE.md typography rules).
 const oswald = Oswald({
   variable: "--font-oswald",
   weight: ["500", "600", "700"],
   subsets: ["latin"],
 });
 
+// Body: humanist sans, quiet and readable.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
 
+// Metadata: taxonomy, tags, episode counts — used sparingly.
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
+const SITE_NAME = "Kilig";
+const SITE_DESCRIPTION = "Vertical micro-drama, curated for the in-between moments — the commute, the queue, the five minutes you've got.";
+
 export const metadata: Metadata = {
-  title: "Veereel",
-  description: "Vertical stories. Made for the way we watch now.",
+  title: {
+    default: "Kilig — find your next obsession",
+    template: "%s · Kilig",
+  },
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    siteName: SITE_NAME,
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+  },
 };
 
 export default function RootLayout({
@@ -41,9 +49,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${oswald.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${oswald.variable} ${inter.variable} ${jetbrainsMono.variable} h-full overflow-x-hidden antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full overflow-x-hidden">
+        <IntroSplash />
+        {children}
+      </body>
     </html>
   );
 }
