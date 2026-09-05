@@ -735,3 +735,171 @@ model ContentPost {
   @@index([postedAt])
   @@map("content_posts")
 }
+
+// ============================================
+// VEEREEL PITCH PLATFORM MODELS
+// ============================================
+
+model Writer {
+  id                String @id @default(uuid())
+  displayName       String @unique @map("display_name")
+  email             String @unique
+  bio               String? @db.Text
+  portfolioUrl      String? @map("portfolio_url")
+  social            Json?
+
+  pitches           Pitch[]
+  receivedMessages  Message[] @relation("to_writer")
+  sentMessages      Message[] @relation("from_writer")
+  auth              WriterAuth?
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("writers")
+}
+
+model Producer {
+  id                String @id @default(uuid())
+  companyName       String @map("company_name")
+  email             String @unique
+  contactPerson     String? @map("contact_person")
+  logo              String?
+  website           String?
+  genresAcquiring   String[] @default([]) @map("genres_acquiring")
+  howToPitch        String? @db.Text @map("how_to_pitch")
+  currentlyLooking  String? @db.Text @map("currently_looking")
+
+  pitchesBookmarked Pitch[] @relation("bookmarkedBy")
+  bookmarks         PitchBookmark[]
+  receivedMessages  Message[] @relation("to_producer")
+  sentMessages      Message[] @relation("from_producer")
+  auth              ProducerAuth?
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("producers")
+}
+
+model Pitch {
+  id                String @id @default(uuid())
+  writerId          String @map("writer_id")
+  writer            Writer @relation(fields: [writerId], references: [id], onDelete: Cascade)
+
+  title             String
+  logline           String
+  synopsis          String @db.Text
+
+  tropeTags         String[] @default([]) @map("trope_tags")
+  moodTags          String[] @default([]) @map("mood_tags")
+  episodeCountEst   Int? @map("episode_count_est")
+  targetPlatforms   String[] @default([]) @map("target_platforms")
+
+  pitchVideoUrl     String? @map("pitch_video_url")
+
+  views             Int @default(0)
+  bookmarks         Int @default(0)
+  bookmarkedBy      Producer[] @relation("bookmarkedBy")
+  bookmarkRecords   PitchBookmark[]
+
+  status            String @default("active")
+  relatedKiligTags  String[]? @map("related_kilig_tags")
+
+  messages          Message[]
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@index([writerId])
+  @@index([status])
+  @@map("pitches")
+}
+
+model PitchBookmark {
+  id                String @id @default(uuid())
+  pitchId           String @map("pitch_id")
+  pitch             Pitch @relation(fields: [pitchId], references: [id], onDelete: Cascade)
+  producerId        String @map("producer_id")
+  producer          Producer @relation(fields: [producerId], references: [id], onDelete: Cascade)
+
+  bookmarkedAt      DateTime @default(now()) @map("bookmarked_at")
+
+  @@unique([pitchId, producerId])
+  @@index([producerId])
+  @@map("pitch_bookmarks")
+}
+
+model Message {
+  id                String @id @default(uuid())
+
+  fromWriterId      String? @map("from_writer_id")
+  fromWriter        Writer? @relation("from_writer", fields: [fromWriterId], references: [id], onDelete: Cascade)
+  fromProducerId    String? @map("from_producer_id")
+  fromProducer      Producer? @relation("from_producer", fields: [fromProducerId], references: [id], onDelete: Cascade)
+
+  toWriterId        String? @map("to_writer_id")
+  toWriter          Writer? @relation("to_writer", fields: [toWriterId], references: [id], onDelete: Cascade)
+  toProducerId      String? @map("to_producer_id")
+  toProducer        Producer? @relation("to_producer", fields: [toProducerId], references: [id], onDelete: Cascade)
+
+  pitchId           String? @map("pitch_id")
+  pitch             Pitch? @relation(fields: [pitchId], references: [id], onDelete: SetNull)
+
+  body              String @db.Text
+  readAt            DateTime? @map("read_at")
+
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@index([toWriterId])
+  @@index([toProducerId])
+  @@index([fromWriterId])
+  @@index([fromProducerId])
+  @@map("messages")
+}
+
+model TrendingTrope {
+  id                String @id @default(uuid())
+  trope             String @unique
+  weeklyRank        Int @map("weekly_rank")
+  weeklySearches    Int @default(0) @map("weekly_searches")
+  weeklyClicks      Int @default(0) @map("weekly_clicks")
+  weeklySaves       Int @default(0) @map("weekly_saves")
+  weekOverWeekGrowth Float @default(0) @map("week_over_week_growth")
+
+  computedAt        DateTime @default(now()) @map("computed_at")
+
+  @@map("trending_tropes")
+}
+
+model WriterAuth {
+  id                String @id @default(uuid())
+  writerId          String @unique @map("writer_id")
+  writer            Writer @relation(fields: [writerId], references: [id], onDelete: Cascade)
+
+  email             String @unique
+  passwordHash      String @map("password_hash")
+  sessionToken      String? @map("session_token")
+  sessionExpiresAt  DateTime? @map("session_expires_at")
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("writer_auth")
+}
+
+model ProducerAuth {
+  id                String @id @default(uuid())
+  producerId        String @unique @map("producer_id")
+  producer          Producer @relation(fields: [producerId], references: [id], onDelete: Cascade)
+
+  email             String @unique
+  passwordHash      String @map("password_hash")
+  sessionToken      String? @map("session_token")
+  sessionExpiresAt  DateTime? @map("session_expires_at")
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("producer_auth")
+}
