@@ -83,20 +83,6 @@ model TagDefinition {
   @@map("tag_definitions")
 }
 
-model Producer {
-  id            String    @id @default(uuid())
-  name          String
-  contactEmail  String?   @map("contact_email")
-  website       String?
-  isVerified    Boolean   @default(false) @map("is_verified")
-  verifiedAt    DateTime? @map("verified_at")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-
-  titles Title[]
-
-  @@map("producers")
-}
 
 // Real, persistent identity — replaces the disposable claimed-name
 // cookie (see Curator below, and curator.ts) as the source of truth
@@ -775,6 +761,7 @@ model Producer {
   receivedMessages  Message[] @relation("to_producer")
   sentMessages      Message[] @relation("from_producer")
   auth              ProducerAuth?
+  titles        Title[]
 
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
@@ -804,7 +791,7 @@ model Pitch {
   bookmarkRecords   PitchBookmark[]
 
   status            String @default("active")
-  relatedKiligTags  String[]? @map("related_kilig_tags")
+  relatedKiligTags  String[] @map("related_kilig_tags")
 
   messages          Message[]
 

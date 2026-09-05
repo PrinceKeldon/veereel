@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 const PRODUCER_COOKIE = "producer_session";
 const PRODUCER_COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 
-export function hashPassword(password: string): string {
+export async function hashPassword(password: string): string {
   const salt = process.env.PASSWORD_SALT || "default-salt-change-this";
   return createHash("sha256")
     .update(password + salt)
