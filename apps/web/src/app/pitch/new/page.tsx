@@ -4,11 +4,6 @@ import { requireWriterSession } from "@/lib/writer-auth";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Submit Pitch - Veereel",
-  description: "Submit your story pitch to Veereel's network of producers.",
-};
-
 export default async function PitchSubmitPage() {
   const writerId = await requireWriterSession();
 

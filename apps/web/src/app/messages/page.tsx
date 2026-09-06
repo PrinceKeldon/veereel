@@ -8,11 +8,6 @@ import { MessageThread } from "@/components/MessageThread";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Messages - Veereel",
-  description: "Your message inbox on Veereel",
-};
-
 export default async function MessagesPage() {
   const writerId = await getWriterSession();
   const producerId = await getProducerSession();
