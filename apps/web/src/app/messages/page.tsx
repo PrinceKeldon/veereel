@@ -6,6 +6,8 @@ import { getMessages } from "@/lib/pitch-actions";
 import { prisma } from "@/lib/prisma";
 import { MessageThread } from "@/components/MessageThread";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Messages - Veereel",
   description: "Your message inbox on Veereel",
