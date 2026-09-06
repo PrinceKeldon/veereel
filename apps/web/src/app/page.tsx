@@ -1,5 +1,8 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
+import { getWriterSession } from "@/lib/writer-auth";
+import { getProducerSession } from "@/lib/producer-auth";
 import { DEFAULT_MOODS, findChip } from "@/lib/moodChips";
 import { MoodChipBar } from "@/components/MoodChipBar";
 import { TitleRail } from "@/components/TitleRail";
@@ -20,9 +23,82 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const activeChips = activeValues.map(findChip).filter((c): c is NonNullable<typeof c> => Boolean(c));
   const chipsToShow = activeChips.length ? activeChips : DEFAULT_MOODS;
 
+  const writerId = await getWriterSession();
+  const producerId = await getProducerSession();
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 pb-16">
       <SiteNav />
+
+      {/* Pitch Platform Banner */}
+      <div className="mb-10 rounded-xl border border-[var(--accent-marigold)] bg-[var(--accent-marigold)]/10 p-6">
+        <h2 className="font-[var(--font-display)] text-2xl font-semibold text-[var(--accent-marigold)]">
+          ✨ Veereel Pitch Platform
+        </h2>
+        <p className="mt-2 text-[var(--text)]">
+          A marketplace for writers to pitch micro-drama stories and producers to discover new content.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          {writerId ? (
+            <>
+              <Link
+                href="/pitch/new"
+                className="rounded-lg bg-[var(--accent-marigold)] px-4 py-2 font-semibold text-[var(--bg)] hover:opacity-90"
+              >
+                📝 Submit a Pitch
+              </Link>
+              <Link
+                href="/pitches"
+                className="rounded-lg border border-[var(--accent-marigold)] px-4 py-2 font-semibold text-[var(--accent-marigold)] hover:bg-[var(--accent-marigold)]/10"
+              >
+                Browse Pitches
+              </Link>
+              <Link
+                href="/messages"
+                className="rounded-lg border border-[var(--accent-marigold)] px-4 py-2 font-semibold text-[var(--accent-marigold)] hover:bg-[var(--accent-marigold)]/10"
+              >
+                💬 Messages
+              </Link>
+            </>
+          ) : producerId ? (
+            <>
+              <Link
+                href="/pitches"
+                className="rounded-lg bg-[var(--accent-marigold)] px-4 py-2 font-semibold text-[var(--bg)] hover:opacity-90"
+              >
+                🎬 Discover Pitches
+              </Link>
+              <Link
+                href="/messages"
+                className="rounded-lg border border-[var(--accent-marigold)] px-4 py-2 font-semibold text-[var(--accent-marigold)] hover:bg-[var(--accent-marigold)]/10"
+              >
+                💬 Messages
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/writer/signup"
+                className="rounded-lg bg-[var(--accent-marigold)] px-4 py-2 font-semibold text-[var(--bg)] hover:opacity-90"
+              >
+                Join as Writer
+              </Link>
+              <Link
+                href="/producer/login"
+                className="rounded-lg border border-[var(--accent-marigold)] px-4 py-2 font-semibold text-[var(--accent-marigold)] hover:bg-[var(--accent-marigold)]/10"
+              >
+                Sign in as Producer
+              </Link>
+              <Link
+                href="/pitches"
+                className="rounded-lg border border-[var(--border)] px-4 py-2 font-semibold text-[var(--text)] hover:border-[var(--accent-marigold)]"
+              >
+                Browse Pitches
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
 
       <Suspense fallback={null}>
         <HeroSection />
