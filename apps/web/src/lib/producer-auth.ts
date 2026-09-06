@@ -141,7 +141,7 @@ export async function loginProducer(
   }
 }
 
-export async function getProducerSession(): Promise<string | null> {
+export async function getProducerSession(): Promise<string | null | undefined> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(PRODUCER_COOKIE)?.value;

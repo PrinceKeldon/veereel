@@ -135,7 +135,7 @@ export async function loginWriter(
   }
 }
 
-export async function getWriterSession(): Promise<string | null> {
+export async function getWriterSession(): Promise<string | null | undefined> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(WRITER_COOKIE)?.value;

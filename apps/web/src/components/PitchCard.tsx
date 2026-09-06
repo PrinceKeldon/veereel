@@ -1,10 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { Pitch } from "@prisma/client";
 
 interface PitchCardProps {
-  pitch: Pitch & {
+  pitch: {
+    id: string;
+    title: string;
+    logline: string;
+    tropeTags: string[];
+    moodTags: string[];
+    views: number;
+    bookmarks: number;
+    createdAt: Date;
     writer: {
       displayName: string;
       portfolioUrl?: string | null;
@@ -45,7 +52,7 @@ export function PitchCard({ pitch }: PitchCardProps) {
         <div className="mb-4 space-y-2">
           {pitch.tropeTags.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {pitch.tropeTags.slice(0, 3).map((tag) => (
+              {pitch.tropeTags.slice(0, 3).map((tag: string) => (
                 <span
                   key={tag}
                   className="rounded-full bg-[var(--accent-marigold)]/20 px-2 py-1 text-xs text-[var(--accent-marigold)]"
@@ -63,7 +70,7 @@ export function PitchCard({ pitch }: PitchCardProps) {
 
           {pitch.moodTags.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {pitch.moodTags.slice(0, 2).map((tag) => (
+              {pitch.moodTags.slice(0, 2).map((tag: string) => (
                 <span
                   key={tag}
                   className="rounded-full bg-[var(--accent-rose)]/20 px-2 py-1 text-xs text-[var(--accent-rose)]"
