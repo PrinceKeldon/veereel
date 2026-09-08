@@ -1,32 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { loginWriter } from "@/lib/writer-auth";
+import { signInWithEmail, type SignInState } from "@/lib/curator-actions";
 
+const initialState: SignInState = {};
+
+/**
+ * A distinct /writer/login URL for clear entry-point branding, but the
+ * form itself posts to the exact same signInWithEmail() every other
+ * identity type uses (curator-actions.ts) — one auth system, not a
+ * separate writer-specific login action. The original build had its
+ * own loginWriter() calling into WriterAuth's SHA256+static-salt
+ * hashing; that's gone along with the file it lived in.
+ */
 export default function WriterLoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    const result = await loginWriter(email, password);
-
-    if (result.success) {
-      router.push("/pitch/new");
-    } else {
-      setError(result.error || "Login failed");
-    }
-
-    setIsLoading(false);
-  };
+  const [state, formAction, isPending] = useActionState(signInWithEmail, initialState);
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-6">
@@ -38,52 +30,51 @@ export default function WriterLoginPage() {
           <p className="mt-2 text-[var(--text-muted)]">Sign in to submit and manage your pitches</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form action={formAction} className="space-y-4">
+          {next && <input type="hidden" name="next" value={next} />}
+
           <div>
-            <label className="mb-2 block font-mono text-xs uppercase text-[var(--text-muted)]">
-              Email
-            </label>
+            <label className="mb-2 block font-mono text-xs uppercase text-[var(--text-muted)]">Email</label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
               placeholder="you@example.com"
+              autoFocus
+              autoComplete="email"
               className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-marigold)] focus:outline-none"
               required
             />
           </div>
 
           <div>
-            <label className="mb-2 block font-mono text-xs uppercase text-[var(--text-muted)]">
-              Password
-            </label>
+            <label className="mb-2 block font-mono text-xs uppercase text-[var(--text-muted)]">Password</label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
               placeholder="••••••••"
+              autoComplete="current-password"
               className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-marigold)] focus:outline-none"
               required
             />
           </div>
 
-          {error && (
+          {state.error && (
             <div className="rounded-lg border border-[var(--accent-rose)] bg-[var(--accent-rose)]/10 p-3">
-              <p className="text-sm text-[var(--accent-rose)]">{error}</p>
+              <p className="text-sm text-[var(--accent-rose)]">{state.error}</p>
             </div>
           )}
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isPending}
             className="w-full rounded-xl bg-[var(--accent-marigold)] py-3 font-semibold text-[var(--bg)] hover:opacity-90 disabled:opacity-50"
           >
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isPending ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-[var(--text-muted)]">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/writer/signup" className="text-[var(--accent-marigold)] hover:underline">
             Sign up
           </Link>

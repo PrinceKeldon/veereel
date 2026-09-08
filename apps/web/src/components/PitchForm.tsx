@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useActionState } from "react";
-import { useRouter } from "next/navigation";
 import { submitPitch } from "@/lib/pitch-actions";
 
 const TROPE_SUGGESTIONS = [
@@ -26,13 +25,18 @@ const MOOD_SUGGESTIONS = ["Dark", "Comedic", "Hopeful", "Suspenseful", "Romantic
 
 const PLATFORMS = ["Netflix", "HBO Max", "Hulu", "Apple TV", "Amazon Prime", "Disney+", "Indie", "YouTube"];
 
-interface PitchFormProps {
-  writerId: string;
-  onSuccess?: (pitchId: string) => void;
-}
-
-export function PitchForm({ writerId, onSuccess }: PitchFormProps) {
-  const router = useRouter();
+/**
+ * writerId is no longer a prop here — submitPitch (pitch-actions.ts)
+ * derives the writer from the session itself via requireWriter(), and
+ * redirects server-side on success. The original version appended a
+ * writerId prop into the FormData and then read `state.pitchId`
+ * synchronously right after calling formAction() to manually
+ * navigate — a stale-closure bug (useActionState's returned state
+ * doesn't update until the next render), so that redirect likely
+ * never actually fired on a real successful submit. Using the plain
+ * <form action={formAction}> directly avoids both problems at once.
+ */
+export function PitchForm() {
   const [state, formAction] = useActionState(submitPitch, {});
   const [title, setTitle] = useState("");
   const [logline, setLogline] = useState("");
@@ -62,16 +66,6 @@ export function PitchForm({ writerId, onSuccess }: PitchFormProps) {
     );
   };
 
-  const handleSubmit = async (formData: FormData) => {
-    formData.append("writerId", writerId);
-    await formAction(formData);
-    
-    if (state.pitchId) {
-      onSuccess?.(state.pitchId);
-      router.push(`/pitch/${state.pitchId}`);
-    }
-  };
-
   const canSubmit =
     title.length >= 5 &&
     logline.length >= 10 &&
@@ -89,7 +83,7 @@ export function PitchForm({ writerId, onSuccess }: PitchFormProps) {
         </p>
       </div>
 
-      <form action={handleSubmit} className="space-y-8">
+      <form action={formAction} className="space-y-8">
         {/* Title */}
         <div>
           <label className="mb-2 block font-mono text-xs uppercase text-[var(--text-muted)]">

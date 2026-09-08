@@ -84,6 +84,31 @@ model TagDefinition {
 }
 
 
+// A passive, admin-set production-company credit on Title.producerId —
+// no login, no relation to User, not an actor in the system. This is
+// its original shape, restored: the pitch-platform work briefly merged
+// this with a logged-in "browse pitches, bookmark, message writers"
+// account under the same model name, which conflated two genuinely
+// different concepts and gave every title-credit row auth/bookmark/
+// message fields that made no sense for it. That capability now lives
+// on Platform instead (see the pitch-platform fields on that model) —
+// a company that publishes a catalogue and one that browses pitches
+// is the same identity, not two.
+model Producer {
+  id            String    @id @default(uuid())
+  name          String
+  contactEmail  String?   @map("contact_email")
+  website       String?
+  isVerified    Boolean   @default(false) @map("is_verified")
+  verifiedAt    DateTime? @map("verified_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  titles Title[]
+
+  @@map("producers")
+}
+
 // Real, persistent identity — replaces the disposable claimed-name
 // cookie (see Curator below, and curator.ts) as the source of truth
 // for who owns a Curator or Platform profile. Existing Curator rows
@@ -107,6 +132,7 @@ model User {
 
   curator            Curator?
   platform           Platform?
+  writer             Writer?
   passwordResetTokens PasswordResetToken[]
 
   @@map("users")
@@ -191,6 +217,19 @@ model Platform {
   // their voice, deliberately contained to their page (see the
   // PlatformAnnouncement model).
   announcements PlatformAnnouncement[]
+
+  // Pitch platform (veereel.tv/pitch) — a platform browsing/bookmarking
+  // writer pitches and messaging writers is the same identity as a
+  // platform publishing its own catalogue, not a separate "Producer"
+  // account. See the note above model Writer for why this replaced a
+  // standalone Producer+ProducerAuth pair.
+  genresAcquiring  String[] @default([]) @map("genres_acquiring")
+  howToPitch       String?  @db.Text @map("how_to_pitch")
+  currentlyLooking String?  @db.Text @map("currently_looking")
+
+  pitchBookmarks         PitchBookmark[]
+  sentPitchMessages      Message[]       @relation("from_platform")
+  receivedPitchMessages  Message[]       @relation("to_platform")
 
   @@map("platforms")
 }
@@ -725,78 +764,86 @@ model ContentPost {
 // ============================================
 // VEEREEL PITCH PLATFORM MODELS
 // ============================================
+//
+// Identity note: Writer is a third sibling under User, alongside
+// Curator and Platform (see User model) - not a separate auth silo.
+// The original build of this feature gave Writer/Producer their own
+// WriterAuth/ProducerAuth tables with their own copy-pasted SHA256+
+// static-salt password hashing, disconnected from User/lib/auth.ts's
+// scrypt implementation. Writer now reuses the same User row, the
+// same hashPassword()/verifyPassword() (lib/auth.ts), and the same
+// signInWithEmail() flow curators and platforms already sign in
+// through - one auth system, not three.
+//
+// A pitch-browsing "Producer" (a company account with a login) turned
+// out to just be Platform under a different name once the fields are
+// looked at side by side - genres/how-to-pitch/what-they-want-now are
+// naturally Platform fields, not a new identity. Producer itself goes
+// back to being exactly what it was before this feature touched it:
+// a passive, admin-set production-company credit on Title.producerId,
+// no login, no relation to User at all. Merging it with the pitch-
+// platform actor was the wrong fix for the original Producer/Producer
+// name collision - unifying with Platform is the correct one.
 
+// A person who pitches original micro-drama stories. Self-serve
+// signup is fine here (unlike Platform, which is deliberately admin-
+// provisioned only) - a writer is an individual creator, not a
+// company identity that could be impersonated to real commercial
+// effect the way self-serve-claiming "DramaBox" would be.
 model Writer {
-  id                String @id @default(uuid())
-  displayName       String @unique @map("display_name")
-  email             String @unique
-  bio               String? @db.Text
-  portfolioUrl      String? @map("portfolio_url")
-  social            Json?
+  id           String  @id @default(uuid())
+  userId       String  @unique @map("user_id")
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  pitches           Pitch[]
-  receivedMessages  Message[] @relation("to_writer")
-  sentMessages      Message[] @relation("from_writer")
-  auth              WriterAuth?
+  displayName  String  @unique @map("display_name")
+  bio          String? @db.Text
+  portfolioUrl String? @map("portfolio_url")
+  social       Json?   @default("{}")
 
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
+  pitches          Pitch[]
+  sentMessages     Message[] @relation("from_writer")
+  receivedMessages Message[] @relation("to_writer")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("writers")
 }
 
-model Producer {
-  id                String @id @default(uuid())
-  companyName       String @map("company_name")
-  email             String @unique
-  contactPerson     String? @map("contact_person")
-  logo              String?
-  website           String?
-  genresAcquiring   String[] @default([]) @map("genres_acquiring")
-  howToPitch        String? @db.Text @map("how_to_pitch")
-  currentlyLooking  String? @db.Text @map("currently_looking")
-
-  pitchesBookmarked Pitch[] @relation("bookmarkedBy")
-  bookmarks         PitchBookmark[]
-  receivedMessages  Message[] @relation("to_producer")
-  sentMessages      Message[] @relation("from_producer")
-  auth              ProducerAuth?
-  titles        Title[]
-
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
-
-  @@map("producers")
-}
-
 model Pitch {
-  id                String @id @default(uuid())
-  writerId          String @map("writer_id")
-  writer            Writer @relation(fields: [writerId], references: [id], onDelete: Cascade)
+  id              String @id @default(uuid())
+  writerId        String @map("writer_id")
+  writer          Writer @relation(fields: [writerId], references: [id], onDelete: Cascade)
 
-  title             String
-  logline           String
-  synopsis          String @db.Text
+  title           String
+  logline         String
+  synopsis        String @db.Text
 
-  tropeTags         String[] @default([]) @map("trope_tags")
-  moodTags          String[] @default([]) @map("mood_tags")
-  episodeCountEst   Int? @map("episode_count_est")
-  targetPlatforms   String[] @default([]) @map("target_platforms")
+  tropeTags       String[] @default([]) @map("trope_tags")
+  moodTags        String[] @default([]) @map("mood_tags")
+  episodeCountEst Int?     @map("episode_count_est")
+  targetPlatforms String[] @default([]) @map("target_platforms")
 
-  pitchVideoUrl     String? @map("pitch_video_url")
+  pitchVideoUrl   String? @map("pitch_video_url")
 
-  views             Int @default(0)
-  bookmarks         Int @default(0)
-  bookmarkedBy      Producer[] @relation("bookmarkedBy")
-  bookmarkRecords   PitchBookmark[]
+  views           Int             @default(0)
+  bookmarks       Int             @default(0)
+  // Deliberately NOT also an implicit many-to-many relation to
+  // Platform here (the original spec had both this explicit join
+  // table AND a `bookmarkedBy Platform[]` relation on Pitch — two
+  // separate tables tracking the same fact with nothing keeping them
+  // in sync). PitchBookmark is the single source of truth; "which
+  // platforms bookmarked this pitch" is bookmarkRecords.map(b =>
+  // b.platform), not a second relation.
+  bookmarkRecords PitchBookmark[]
 
-  status            String @default("active")
-  relatedKiligTags  String[] @map("related_kilig_tags")
+  status           String   @default("active")
+  relatedKiligTags String[] @default([]) @map("related_kilig_tags")
 
-  messages          Message[]
+  messages Message[]
 
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([writerId])
   @@index([status])
@@ -804,89 +851,67 @@ model Pitch {
 }
 
 model PitchBookmark {
-  id                String @id @default(uuid())
-  pitchId           String @map("pitch_id")
-  pitch             Pitch @relation(fields: [pitchId], references: [id], onDelete: Cascade)
-  producerId        String @map("producer_id")
-  producer          Producer @relation(fields: [producerId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  pitchId    String   @map("pitch_id")
+  pitch      Pitch    @relation(fields: [pitchId], references: [id], onDelete: Cascade)
+  platformId String   @map("platform_id")
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
 
-  bookmarkedAt      DateTime @default(now()) @map("bookmarked_at")
+  bookmarkedAt DateTime @default(now()) @map("bookmarked_at")
 
-  @@unique([pitchId, producerId])
-  @@index([producerId])
+  @@unique([pitchId, platformId])
+  @@index([platformId])
   @@map("pitch_bookmarks")
 }
 
 model Message {
-  id                String @id @default(uuid())
+  id String @id @default(uuid())
 
-  fromWriterId      String? @map("from_writer_id")
-  fromWriter        Writer? @relation("from_writer", fields: [fromWriterId], references: [id], onDelete: Cascade)
-  fromProducerId    String? @map("from_producer_id")
-  fromProducer      Producer? @relation("from_producer", fields: [fromProducerId], references: [id], onDelete: Cascade)
+  fromWriterId   String?   @map("from_writer_id")
+  fromWriter     Writer?   @relation("from_writer", fields: [fromWriterId], references: [id], onDelete: Cascade)
+  fromPlatformId String?   @map("from_platform_id")
+  fromPlatform   Platform? @relation("from_platform", fields: [fromPlatformId], references: [id], onDelete: Cascade)
 
-  toWriterId        String? @map("to_writer_id")
-  toWriter          Writer? @relation("to_writer", fields: [toWriterId], references: [id], onDelete: Cascade)
-  toProducerId      String? @map("to_producer_id")
-  toProducer        Producer? @relation("to_producer", fields: [toProducerId], references: [id], onDelete: Cascade)
+  toWriterId   String?   @map("to_writer_id")
+  toWriter     Writer?   @relation("to_writer", fields: [toWriterId], references: [id], onDelete: Cascade)
+  toPlatformId String?   @map("to_platform_id")
+  toPlatform   Platform? @relation("to_platform", fields: [toPlatformId], references: [id], onDelete: Cascade)
 
-  pitchId           String? @map("pitch_id")
-  pitch             Pitch? @relation(fields: [pitchId], references: [id], onDelete: SetNull)
+  pitchId String? @map("pitch_id")
+  pitch   Pitch?  @relation(fields: [pitchId], references: [id], onDelete: SetNull)
 
-  body              String @db.Text
-  readAt            DateTime? @map("read_at")
+  body   String    @db.Text
+  readAt DateTime? @map("read_at")
 
-  createdAt         DateTime @default(now()) @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([toWriterId])
-  @@index([toProducerId])
+  @@index([toPlatformId])
   @@index([fromWriterId])
-  @@index([fromProducerId])
+  @@index([fromPlatformId])
   @@map("messages")
 }
 
+// Deliberately NOT wired to a weekly sync job as originally spec'd.
+// TrendingRail/FandomTrendingRail (page.tsx) and hero.ts's
+// most_collected mode already compute real, floor-gated trending data
+// live, in the same database - a batch-computed snapshot table only
+// makes sense if this pitch platform lived in a separate database,
+// which it doesn't. Left in place structurally (unpopulated) rather
+// than removed, since deciding whether trending-badge data on pitches
+// should query Kilig's live tables directly instead is a real product
+// question, not a security fix - worth a deliberate decision, not
+// bundled into this pass.
 model TrendingTrope {
-  id                String @id @default(uuid())
-  trope             String @unique
-  weeklyRank        Int @map("weekly_rank")
-  weeklySearches    Int @default(0) @map("weekly_searches")
-  weeklyClicks      Int @default(0) @map("weekly_clicks")
-  weeklySaves       Int @default(0) @map("weekly_saves")
-  weekOverWeekGrowth Float @default(0) @map("week_over_week_growth")
+  id                 String @id @default(uuid())
+  trope              String @unique
+  weeklyRank         Int    @map("weekly_rank")
+  weeklySearches     Int    @default(0) @map("weekly_searches")
+  weeklyClicks       Int    @default(0) @map("weekly_clicks")
+  weeklySaves        Int    @default(0) @map("weekly_saves")
+  weekOverWeekGrowth Float  @default(0) @map("week_over_week_growth")
 
-  computedAt        DateTime @default(now()) @map("computed_at")
+  computedAt DateTime @default(now()) @map("computed_at")
 
   @@map("trending_tropes")
-}
-
-model WriterAuth {
-  id                String @id @default(uuid())
-  writerId          String @unique @map("writer_id")
-  writer            Writer @relation(fields: [writerId], references: [id], onDelete: Cascade)
-
-  email             String @unique
-  passwordHash      String @map("password_hash")
-  sessionToken      String? @map("session_token")
-  sessionExpiresAt  DateTime? @map("session_expires_at")
-
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
-
-  @@map("writer_auth")
-}
-
-model ProducerAuth {
-  id                String @id @default(uuid())
-  producerId        String @unique @map("producer_id")
-  producer          Producer @relation(fields: [producerId], references: [id], onDelete: Cascade)
-
-  email             String @unique
-  passwordHash      String @map("password_hash")
-  sessionToken      String? @map("session_token")
-  sessionExpiresAt  DateTime? @map("session_expires_at")
-
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
-
-  @@map("producer_auth")
 }

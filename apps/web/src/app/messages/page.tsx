@@ -1,22 +1,25 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getWriterSession } from "@/lib/writer-auth";
-import { getProducerSession } from "@/lib/producer-auth";
+import { peekWriterId } from "@/lib/writer";
+import { peekPlatformId } from "@/lib/platform";
 import { getMessages } from "@/lib/pitch-actions";
-import { prisma } from "@/lib/prisma";
-import { MessageThread } from "@/components/MessageThread";
 
 export const dynamic = "force-dynamic";
 
 export default async function MessagesPage() {
-  const writerId = await getWriterSession();
-  const producerId = await getProducerSession();
+  const writerId = await peekWriterId();
+  const platformId = await peekPlatformId();
 
-  if (!writerId && !producerId) {
-    redirect("/writer/login");
+  if (!writerId && !platformId) {
+    // /signin handles writer/platform/curator login through the same
+    // shared flow (see signInWithEmail's writer branch) — not a
+    // writer-only redirect the way the original build had it.
+    redirect("/signin?next=/messages");
   }
 
-  const messages = await getMessages(writerId || undefined, producerId || undefined);
+  // getMessages() derives identity from the session itself — no
+  // argument to pass or forge.
+  const messages = await getMessages();
 
   // Group messages by conversation
   const conversations = new Map<
@@ -33,9 +36,9 @@ export default async function MessagesPage() {
 
   for (const msg of messages) {
     const otherPartyId =
-      msg.fromWriterId === writerId ? msg.toProducerId : msg.toWriterId || msg.fromProducerId;
+      msg.fromWriterId === writerId ? msg.toPlatformId : msg.toWriterId || msg.fromPlatformId;
     const otherPartyName =
-      msg.fromWriterId === writerId ? msg.toProducer?.companyName : msg.fromWriter?.displayName;
+      msg.fromWriterId === writerId ? msg.toPlatform?.name : msg.fromWriter?.displayName;
     const otherPartyType =
       msg.fromWriterId === writerId ? ("producer" as const) : ("writer" as const);
 

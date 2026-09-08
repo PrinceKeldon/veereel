@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { setPlatformCookie } from "@/lib/platform";
+import { setWriterCookie } from "@/lib/writer";
 import {
   peekCuratorId,
   peekCuratorAuthStatus,
@@ -274,6 +275,7 @@ export async function signInWithEmail(
       passwordHash: true,
       curator: { select: { id: true, displayName: true } },
       platform: { select: { id: true, slug: true } },
+      writer: { select: { id: true, displayName: true } },
     },
   });
   // Same error either way — don't reveal whether the email exists.
@@ -296,7 +298,13 @@ export async function signInWithEmail(
     redirect(safeNextPath(str(formData, "next"), `/platform/${user.platform.slug}`));
   }
 
-  return { error: "This account has no curator or platform identity." };
+  if (user.writer) {
+    // Same sibling-cookie reasoning as Platform above — see lib/writer.ts.
+    await setWriterCookie(user.writer.id);
+    redirect(safeNextPath(str(formData, "next"), `/writer/${user.writer.displayName}`));
+  }
+
+  return { error: "This account has no curator, platform, or writer identity." };
 }
 
 export interface DeleteAccountState {

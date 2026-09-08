@@ -5,15 +5,15 @@ import { bookmarkPitch, unbookmarkPitch } from "@/lib/pitch-actions";
 
 interface PitchBookmarkButtonProps {
   pitchId: string;
-  producerId: string;
   isBookmarked: boolean;
 }
 
-export function PitchBookmarkButton({
-  pitchId,
-  producerId,
-  isBookmarked: initialBookmarked,
-}: PitchBookmarkButtonProps) {
+// producerId is no longer a prop — bookmarkPitch/unbookmarkPitch
+// derive the platform from the session via requirePlatform(). The
+// original build took a producerId argument straight from this
+// component with nothing checking it server-side, meaning anyone
+// could bookmark/unbookmark as any producer just by knowing their id.
+export function PitchBookmarkButton({ pitchId, isBookmarked: initialBookmarked }: PitchBookmarkButtonProps) {
   const [isBookmarked, setIsBookmarked] = useState(initialBookmarked);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,15 +21,11 @@ export function PitchBookmarkButton({
     setIsLoading(true);
 
     if (isBookmarked) {
-      const result = await unbookmarkPitch(pitchId, producerId);
-      if (result.success) {
-        setIsBookmarked(false);
-      }
+      const result = await unbookmarkPitch(pitchId);
+      if (result.success) setIsBookmarked(false);
     } else {
-      const result = await bookmarkPitch(pitchId, producerId);
-      if (result.success) {
-        setIsBookmarked(true);
-      }
+      const result = await bookmarkPitch(pitchId);
+      if (result.success) setIsBookmarked(true);
     }
 
     setIsLoading(false);

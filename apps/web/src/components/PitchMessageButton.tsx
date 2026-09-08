@@ -5,37 +5,34 @@ import { sendMessage } from "@/lib/pitch-actions";
 
 interface PitchMessageButtonProps {
   pitchId: string;
-  producerId: string;
-  writerId: string;
+  toWriterId: string;
 }
 
-export function PitchMessageButton({
-  pitchId,
-  producerId,
-  writerId,
-}: PitchMessageButtonProps) {
+// producerId/writerId sender props are gone — sendMessage derives the
+// "from" identity from whichever session (writer or platform) is
+// actually signed in, never from an argument this component supplies.
+// The original build let this component pass an arbitrary producerId
+// as the message's "from" field, meaning anyone could send a message
+// impersonating any producer to any writer.
+export function PitchMessageButton({ pitchId, toWriterId }: PitchMessageButtonProps) {
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
     setIsLoading(true);
+    setError(null);
 
-    const result = await sendMessage(
-      null,
-      producerId,
-      writerId,
-      null,
-      pitchId,
-      message
-    );
+    const result = await sendMessage(toWriterId, null, pitchId, message);
 
-    if (!result.error) {
+    if (result.success) {
       setMessage("");
       setShowForm(false);
-      // Could show a success toast here
+    } else {
+      setError(result.error ?? "Failed to send message.");
     }
 
     setIsLoading(false);
@@ -60,11 +57,13 @@ export function PitchMessageButton({
             rows={4}
             className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-marigold)] focus:outline-none"
           />
+          {error && <p className="text-sm text-[var(--accent-rose)]">{error}</p>}
           <div className="flex gap-2">
             <button
               onClick={() => {
                 setShowForm(false);
                 setMessage("");
+                setError(null);
               }}
               className="flex-1 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--surface)]"
             >

@@ -20,6 +20,16 @@ export default function Home() {
         >
           ENTER KILIG →
         </a>
+
+        <div className="mt-12 flex items-center justify-center gap-6 text-sm text-[#8B8D98]">
+          <a href="/pitch/new" className="transition-colors hover:text-[#F1EEE6]">
+            Pitch your story →
+          </a>
+          <span className="text-[#8B8D98]/40">·</span>
+          <a href="/pitches" className="transition-colors hover:text-[#F1EEE6]">
+            Browse pitches →
+          </a>
+        </div>
       </div>
     </main>
   );

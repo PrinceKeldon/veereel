@@ -1,19 +1,16 @@
-import { redirect } from "next/navigation";
 import { PitchForm } from "@/components/PitchForm";
-import { requireWriterSession } from "@/lib/writer-auth";
+import { requireWriter } from "@/lib/writer";
 
 export const dynamic = "force-dynamic";
 
 export default async function PitchSubmitPage() {
-  const writerId = await requireWriterSession();
-
-  if (!writerId) {
-    redirect("/writer/login");
-  }
+  // requireWriter() redirects to /writer/login itself when there's no
+  // session — nothing else for this page to check.
+  await requireWriter("/pitch/new");
 
   return (
     <main className="min-h-screen bg-[var(--bg)]">
-      <PitchForm writerId={writerId} />
+      <PitchForm />
     </main>
   );
 }

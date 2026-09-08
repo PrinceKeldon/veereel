@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPitchDetail } from "@/lib/pitch-actions";
-import { getWriterSession } from "@/lib/writer-auth";
-import { getProducerSession } from "@/lib/producer-auth";
+import { peekWriterId } from "@/lib/writer";
+import { peekPlatformId } from "@/lib/platform";
 import { PitchBookmarkButton } from "@/components/PitchBookmarkButton";
 import { PitchMessageButton } from "@/components/PitchMessageButton";
 
@@ -27,8 +27,8 @@ export default async function PitchDetailPage({ params }: PitchDetailPageProps) 
     notFound();
   }
 
-  const writerId = await getWriterSession();
-  const producerId = await getProducerSession();
+  const writerId = await peekWriterId();
+  const platformId = await peekPlatformId();
   const isOwner = writerId === pitch.writerId;
 
   return (
@@ -220,19 +220,22 @@ export default async function PitchDetailPage({ params }: PitchDetailPageProps) 
             {/* Actions */}
             {!isOwner && (
               <div className="space-y-3">
-                {producerId && (
+                {platformId && (
                   <>
-                    <PitchBookmarkButton pitchId={pitch.id} producerId={producerId} isBookmarked={pitch.bookmarkRecords.some((b) => b.producerId === producerId)} />
-                    <PitchMessageButton pitchId={pitch.id} producerId={producerId} writerId={pitch.writerId} />
+                    <PitchBookmarkButton
+                      pitchId={pitch.id}
+                      isBookmarked={pitch.bookmarkRecords.some((b) => b.platformId === platformId)}
+                    />
+                    <PitchMessageButton pitchId={pitch.id} toWriterId={pitch.writerId} />
                   </>
                 )}
 
-                {!producerId && !writerId && (
+                {!platformId && !writerId && (
                   <Link
-                    href="/producer/login"
+                    href={`/signin?next=${encodeURIComponent(`/pitch/${pitch.id}`)}`}
                     className="block rounded-lg bg-[var(--accent-marigold)] px-4 py-3 text-center font-semibold text-[var(--bg)] hover:opacity-90"
                   >
-                    Sign in as Producer
+                    Sign in as a Platform
                   </Link>
                 )}
               </div>
