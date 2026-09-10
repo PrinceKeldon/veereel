@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import { PitchForm } from "@/components/PitchForm";
 import { requireWriter } from "@/lib/writer";
 
@@ -8,9 +9,14 @@ export default async function PitchSubmitPage() {
   // session — nothing else for this page to check.
   await requireWriter("/pitch/new");
 
+  const verticalDramaPlatforms = await prisma.platform.findMany({
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+
   return (
     <main className="min-h-screen bg-[var(--bg)]">
-      <PitchForm />
+      <PitchForm verticalDramaPlatforms={verticalDramaPlatforms} />
     </main>
   );
 }

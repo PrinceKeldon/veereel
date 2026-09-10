@@ -25,6 +25,10 @@ const MOOD_SUGGESTIONS = ["Dark", "Comedic", "Hopeful", "Suspenseful", "Romantic
 
 const PLATFORMS = ["Netflix", "HBO Max", "Hulu", "Apple TV", "Amazon Prime", "Disney+", "Indie", "YouTube"];
 
+interface PitchFormProps {
+  verticalDramaPlatforms?: Array<{ id: string; name: string }>;
+}
+
 /**
  * writerId is no longer a prop here — submitPitch (pitch-actions.ts)
  * derives the writer from the session itself via requireWriter(), and
@@ -36,7 +40,7 @@ const PLATFORMS = ["Netflix", "HBO Max", "Hulu", "Apple TV", "Amazon Prime", "Di
  * never actually fired on a real successful submit. Using the plain
  * <form action={formAction}> directly avoids both problems at once.
  */
-export function PitchForm() {
+export function PitchForm({ verticalDramaPlatforms = [] }: PitchFormProps) {
   const [state, formAction] = useActionState(submitPitch, {});
   const [title, setTitle] = useState("");
   const [logline, setLogline] = useState("");
@@ -47,6 +51,9 @@ export function PitchForm() {
   const [targetPlatforms, setTargetPlatforms] = useState<string[]>([]);
   const [pitchVideoUrl, setPitchVideoUrl] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const platformOptions = verticalDramaPlatforms.length
+    ? verticalDramaPlatforms.map((platform) => platform.name)
+    : PLATFORMS;
 
   const handleTropeToggle = (trope: string) => {
     setTropeTags((prev) =>
@@ -226,7 +233,7 @@ export function PitchForm() {
               Target Platforms
             </label>
             <div className="flex flex-wrap gap-2">
-              {PLATFORMS.map((platform) => (
+              {platformOptions.map((platform) => (
                 <button
                   key={platform}
                   type="button"
